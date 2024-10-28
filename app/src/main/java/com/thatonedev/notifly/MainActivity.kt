@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.thatonedev.notifly.activities.EditRuleActivity
 import com.thatonedev.notifly.activities.PermissionActivity
 import com.thatonedev.notifly.components.RuleComponent
 import org.json.JSONArray
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         refreshRules(loadRulesFromFile(this))
 
         findViewById<FloatingActionButton>(R.id.add_rule_btn).setOnClickListener {
-
+            startActivity(Intent(Intent(this, EditRuleActivity::class.java)))
         }
     }
 
