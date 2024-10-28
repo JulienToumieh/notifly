@@ -12,46 +12,32 @@ import android.service.notification.StatusBarNotification
 import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
 class NotificationService : NotificationListenerService() {
 
-    val task1 = JSONObject().apply {
-        put("name", "Click on the checkbox to complete task.")
-        put("active", false)
-        put("apps", "[]")
-        put("vibration", "V100,S100,V100")
-        put("sound", "i have no idea")
-        put("containsType", 0) // 0 -> Entire Notification, 1 -> Title, 2 -> Text
-        put("containsData", "[]")
-        put("containsOperation", "OR") // AND, OR
-    }
-
-    val task2 = JSONObject().apply {
-        put("name", "Click and hold on a task to delete.")
-        put("active", true)
-        put("apps", "[]")
-        put("vibration", "V1000,S100,V100")
-        put("sound", "i have no idea")
-        put("containsType", "Notification") // Notification, Title, Text
-        put("containsData", "[]")
-        put("containsOperation", "OR") // AND, OR
-    }
-
-
-    val ruleArray = JSONArray().apply {
-        put(task1)
-        put(task2)
-    }
+    lateinit var ruleArray: JSONArray
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
+        ruleArray = loadRulesFromFile(this)
         val packageName = sbn.packageName
         val notificationTitle = sbn.notification.extras.getString(Notification.EXTRA_TITLE, "")
         val notificationText = sbn.notification.extras.getString(Notification.EXTRA_TEXT, "")
 
         // Check if notification matches criteria
-        if (shouldCustomizeNotification(packageName, notificationTitle, notificationText) != -1) {
+        val ruleId = shouldCustomizeNotification(packageName, notificationTitle, notificationText)
+        if (ruleId != -1) {
             triggerCustomVibrationAndSound()
         }
+    }
+
+    private fun loadRulesFromFile(context: Context): JSONArray {
+        val file = File(context.filesDir, "rules.json")
+        if (file.exists()) {
+            val jsonString = file.readText()
+            return JSONArray(jsonString)
+        }
+        return JSONArray()
     }
 
     private fun shouldCustomizeNotification(packageName: String, title: String, text: String): Int {
@@ -101,9 +87,6 @@ class NotificationService : NotificationListenerService() {
             }
         }
         return -1
-
-        //return packageName == "com.whatsapp" && title.contains("specific keyword") && text.contains("important message")
-
     }
 
     private fun triggerCustomVibrationAndSound() {
@@ -118,9 +101,11 @@ class NotificationService : NotificationListenerService() {
         }
 
         // Play custom sound
+        /*
         val soundUri: Uri = Uri.parse("android.resource://${packageName}/raw/custom_sound")
         val mediaPlayer = MediaPlayer.create(this, soundUri)
         mediaPlayer.setOnCompletionListener { it.release() }
         mediaPlayer.start()
+        */
     }
 }

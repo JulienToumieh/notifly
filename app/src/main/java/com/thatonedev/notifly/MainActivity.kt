@@ -20,6 +20,7 @@ import com.thatonedev.notifly.activities.PermissionActivity
 import com.thatonedev.notifly.components.RuleComponent
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,43 +43,60 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        val task1 = JSONObject().apply {
-            put("name", "Click on the checkbox to complete task.")
-            put("active", false)
-            put("apps", "[]")
-            put("vibration", "V100,S100,V100")
-            put("sound", "i have no idea")
-            put("containsType", 0) // 0 -> Entire Notification, 1 -> Title, 2 -> Text
-            put("containsData", "[]")
-            put("containsOperation", "OR") // AND, OR
-        }
 
-        val task2 = JSONObject().apply {
-            put("name", "Click and hold on a task to delete.")
-            put("active", true)
-            put("apps", "[]")
-            put("vibration", "V1000,S100,V100")
-            put("sound", "i have no idea")
-            put("containsType", "Notification") // Notification, Title, Text
-            put("containsData", "[]")
-            put("containsOperation", "OR") // AND, OR
+        if (getSharedPreferences("app", MODE_PRIVATE).getBoolean("firstRun", true)) {
+            getSharedPreferences("app", MODE_PRIVATE).edit().putBoolean("firstRun", false).apply()
+            val tasksArray = JSONArray()
+            saveRulesToFile(this, tasksArray)
+            createRule(this, "Mhmm", "[\"com.whatsapp\"]", "", "", "All Notifications", "[]", "")
         }
 
 
-        val ruleArray = JSONArray().apply {
-            put(task1)
-            put(task2)
-        }
 
-        val recyclerView = findViewById<RecyclerView>(R.id.rule_recycler_view)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        val adapter = RuleComponent(this, ruleArray)
-        recyclerView.adapter = adapter
+        refreshRules(loadRulesFromFile(this))
 
         findViewById<FloatingActionButton>(R.id.add_rule_btn).setOnClickListener {
 
         }
     }
 
+    private fun refreshRules(ruleArray: JSONArray){
+        val recyclerView = findViewById<RecyclerView>(R.id.rule_recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val adapter = RuleComponent(this, ruleArray)
+        recyclerView.adapter = adapter
+    }
+
+    private fun createRule(context: Context, name: String, apps: String, vibration: String, sound: String, containsType: String, containsData: String, containsOperation: String) {
+        val rulesArray = loadRulesFromFile(context) ?: JSONArray()
+        val newRule = JSONObject().apply {
+            put("name", name)
+            put("active", true)
+            put("apps", apps)
+            put("vibration", vibration)
+            put("sound", sound)
+            put("containsType", containsType) // Notification, Title, Text
+            put("containsData", containsData)
+            put("containsOperation", containsOperation) // AND, OR
+        }
+        rulesArray.put(newRule)
+
+        saveRulesToFile(context, rulesArray)
+        refreshRules(rulesArray)
+    }
+
+    private fun saveRulesToFile(context: Context, tasksArray: JSONArray) {
+        val file = File(context.filesDir, "rules.json")
+        file.writeText(tasksArray.toString())
+    }
+
+    private fun loadRulesFromFile(context: Context): JSONArray {
+        val file = File(context.filesDir, "rules.json")
+        if (file.exists()) {
+            val jsonString = file.readText()
+            return JSONArray(jsonString)
+        }
+        return JSONArray()
+    }
 
 }
