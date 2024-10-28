@@ -23,13 +23,16 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_edit_rule)
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
+        showAppSelector()
+    }
+
+    private fun showAppSelector(){
         val recyclerView = findViewById<RecyclerView>(R.id.app_card_recycler)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
