@@ -12,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.thatonedev.notifly.R
 import org.json.JSONArray
 
-
 class AppSelectCardComponent(private val activity: Activity, private val dataSet: JSONArray) : RecyclerView.Adapter<AppSelectCardComponent.ViewHolder>() {
+
+    private var filteredDataSet: JSONArray = dataSet
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val appCardName: TextView = view.findViewById(R.id.app_card_name)
@@ -27,23 +28,35 @@ class AppSelectCardComponent(private val activity: Activity, private val dataSet
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val appInfo = dataSet.getJSONObject(position)
+        val appInfo = filteredDataSet.getJSONObject(position)
         viewHolder.appCardName.text = appInfo.getString("name")
+        //appInfo.getString("packageName")
 
-        // Get the drawable icon
         val iconDrawable = appInfo.get("icon") as Drawable
         viewHolder.appCardIcon.setImageDrawable(iconDrawable)
 
         viewHolder.appCardCheckBox.setOnClickListener {
-            // Handle checkbox click event
-            // For example, you can pass the position back to the activity or fragment
-            // Notify the activity or fragment about the toggle
             (activity as? OnDataPass)?.toggleAppCard(position)
         }
     }
 
+    override fun getItemCount() = filteredDataSet.length()
 
-    override fun getItemCount() = dataSet.length()
+    fun filter(query: String) {
+        filteredDataSet = if (query.isEmpty()) {
+            dataSet
+        } else {
+            val tempList = JSONArray()
+            for (i in 0 until dataSet.length()) {
+                val appInfo = dataSet.getJSONObject(i)
+                if (appInfo.getString("name").contains(query, true)) {
+                    tempList.put(appInfo)
+                }
+            }
+            tempList
+        }
+        notifyDataSetChanged()
+    }
 
     interface OnDataPass {
         fun toggleAppCard(position: Int)

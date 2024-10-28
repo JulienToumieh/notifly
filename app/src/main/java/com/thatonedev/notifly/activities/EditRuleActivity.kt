@@ -2,6 +2,9 @@ package com.thatonedev.notifly.activities
 
 import android.app.Activity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,11 +16,14 @@ import com.thatonedev.notifly.components.AppSelectCardComponent
 import org.json.JSONArray
 import org.json.JSONObject
 
-class EditRuleActivity : AppCompatActivity() {
+class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass {
+    private lateinit var adapter: AppSelectCardComponent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_edit_rule)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -27,31 +33,45 @@ class EditRuleActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.app_card_recycler)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Get installed apps and set adapter
         val appsData = getInstalledApps(this)
-        val adapter = AppSelectCardComponent(this, appsData)
+        adapter = AppSelectCardComponent(this, appsData)
         recyclerView.adapter = adapter
 
+        val searchBar: EditText = findViewById(R.id.app_search_bar)
+        searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                adapter.filter(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
-    fun getInstalledApps(activity: Activity): JSONArray {
+    private fun getInstalledApps(activity: Activity): JSONArray {
         val packageManager = activity.packageManager
-        val appsList = JSONArray()
+        val appsList = mutableListOf<JSONObject>()
 
         val packages = packageManager.getInstalledApplications(0)
         for (app in packages) {
             val appInfo = packageManager.getApplicationInfo(app.packageName, 0)
             val appName = packageManager.getApplicationLabel(appInfo).toString()
-            val appIcon = appInfo.loadIcon(packageManager)
-            val isActive = true // You can define the logic to check if the app is active
+            val iconDrawable = appInfo.loadIcon(packageManager)
 
-            val jsonObject = JSONObject()
-            jsonObject.put("name", appName)
-            jsonObject.put("icon", appIcon)
-            jsonObject.put("active", isActive)
-            appsList.put(jsonObject)
+            val jsonObject = JSONObject().apply {
+                put("name", appName)
+                put("packageName", app.packageName)
+                put("icon", iconDrawable)
+            }
+            appsList.add(jsonObject)
         }
-        return appsList
+        appsList.sortBy { it.getString("name") }
+
+        return JSONArray(appsList)
     }
 
+    override fun toggleAppCard(position: Int) {
+        // Handle checkbox toggle logic
+    }
 }
