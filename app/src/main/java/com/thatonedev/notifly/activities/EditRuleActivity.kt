@@ -16,8 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
 import com.thatonedev.notifly.components.AppSelectCardComponent
+import kotlinx.coroutines.MainScope
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -50,6 +53,7 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
         val ruleKeywordChipContainer = findViewById<ChipGroup>(R.id.edit_rule_keyword_chip_container)
         val ruleKeywordInputText = findViewById<EditText>(R.id.edit_rule_keyword_input_text)
         val ruleAddKeywordButton = findViewById<TextView>(R.id.edit_rule_add_keyword_button)
+        val ruleSaveButton = findViewById<FloatingActionButton>(R.id.edit_rule_save_button)
         val ruleFilterTypeSpinner = findViewById<Spinner>(R.id.edit_rule_filter_type_spinner)
         ruleFilterTypeSpinner.adapter = adapter
 
@@ -60,6 +64,18 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
                 putExtra("RULE_ID", ruleId)
             }
             startActivity(intent)
+        }
+
+        ruleActiveSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            rule.put("active", isChecked)
+        }
+
+        ruleSaveButton.setOnClickListener {
+            var newRules = loadRulesFromFile(this)
+            newRules.put(ruleId, rule)
+            saveRulesToFile(this, newRules)
+
+            startActivity(Intent(this, MainActivity::class.java))
         }
 
         ruleFilterTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -99,6 +115,7 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
 
     }
 
+
     private fun loadRulesFromFile(context: Context): JSONArray {
         val file = File(context.filesDir, "rules.json")
         if (file.exists()) {
@@ -108,9 +125,9 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
         return JSONArray()
     }
 
-    private fun saveRulesToFile(context: Context, tasksArray: JSONArray) {
+    private fun saveRulesToFile(context: Context, ruleArray: JSONArray) {
         val file = File(context.filesDir, "rules.json")
-        file.writeText(tasksArray.toString())
+        file.writeText(ruleArray.toString())
     }
 
     override fun toggleAppCard(position: Int) {

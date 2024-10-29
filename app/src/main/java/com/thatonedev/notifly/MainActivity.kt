@@ -89,9 +89,9 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
         refreshRules(rulesArray)
     }
 
-    private fun saveRulesToFile(context: Context, tasksArray: JSONArray) {
+    private fun saveRulesToFile(context: Context, ruleArray: JSONArray) {
         val file = File(context.filesDir, "rules.json")
-        file.writeText(tasksArray.toString())
+        file.writeText(ruleArray.toString())
     }
 
     private fun loadRulesFromFile(context: Context): JSONArray {
@@ -108,6 +108,14 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
             putExtra("RULE_ID", ruleId)
         }
         startActivity(intent)
+    }
+
+    override fun activateRule(ruleId: Int, active: Boolean) {
+        val newRules = loadRulesFromFile(this)
+        val rule = loadRulesFromFile(this).getJSONObject(ruleId)
+        rule.put("active", active)
+        newRules.put(ruleId, rule)
+        saveRulesToFile(this, newRules)
     }
 
 }

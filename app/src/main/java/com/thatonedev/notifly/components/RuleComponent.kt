@@ -28,6 +28,10 @@ class RuleComponent(private val activity: Activity, private val dataSet: JSONArr
         viewHolder.ruleName.text = dataSet.getJSONObject(position).getString("name").toString()
         viewHolder.ruleSwitch.isChecked = dataSet.getJSONObject(position).getBoolean("active")
 
+        viewHolder.ruleSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            (activity as? OnDataPass)?.activateRule(position, isChecked)
+        }
+
         viewHolder.ruleCard.setOnClickListener {
             (activity as? OnDataPass)?.editRule(position)
         }
@@ -37,5 +41,6 @@ class RuleComponent(private val activity: Activity, private val dataSet: JSONArr
 
     interface OnDataPass {
         fun editRule(ruleId: Int)
+        fun activateRule(ruleId: Int, active: Boolean)
     }
 }
