@@ -28,7 +28,7 @@ class RuleComponent(private val activity: Activity, private val dataSet: JSONArr
         viewHolder.ruleName.text = dataSet.getJSONObject(position).getString("name").toString()
         viewHolder.ruleSwitch.isChecked = dataSet.getJSONObject(position).getBoolean("active")
 
-        viewHolder.ruleSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+        viewHolder.ruleSwitch.setOnCheckedChangeListener { _, isChecked ->
             (activity as? OnDataPass)?.activateRule(position, isChecked)
         }
 

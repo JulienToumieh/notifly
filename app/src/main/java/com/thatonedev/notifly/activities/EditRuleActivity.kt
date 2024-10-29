@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,9 +56,58 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
         val ruleAddKeywordButton = findViewById<TextView>(R.id.edit_rule_add_keyword_button)
         val ruleSaveButton = findViewById<FloatingActionButton>(R.id.edit_rule_save_button)
         val ruleFilterTypeSpinner = findViewById<Spinner>(R.id.edit_rule_filter_type_spinner)
+        val ruleAddKeywordsContainer = findViewById<ConstraintLayout>(R.id.edit_rule_add_keywords_container)
         ruleFilterTypeSpinner.adapter = adapter
 
         ruleFilterTypeSpinner.setSelection(filterTypeSpinnerOptions.indexOf(rule.getString("filterType")))
+
+        ruleAddKeywordButton.setOnClickListener {
+            if (ruleKeywordInputText.text.toString() != "") {
+                val chip = Chip(this).apply {
+                    text = ruleKeywordInputText.text.toString()
+                    isCloseIconVisible = true
+                    setOnCloseIconClickListener {
+                        ruleKeywordChipContainer.removeView(this)
+                    }
+                }
+                ruleKeywordChipContainer.addView(chip)
+                ruleKeywordInputText.text = null
+            }
+
+            var newKeywords = "["
+            for (i in 0 until ruleKeywordChipContainer.childCount) {
+                val chip = ruleKeywordChipContainer.getChildAt(i) as? Chip
+                chip?.let {
+                    newKeywords = newKeywords + "\"" + it.text.toString() + "\","
+                }
+            }
+            newKeywords = newKeywords.substring(0, newKeywords.length - 1) + "]"
+            rule.put("keywords", newKeywords)
+        }
+
+
+        val keywords = JSONArray(rule.getString("keywords"))
+        for (keyword in 0 until keywords.length()){
+            val chip = Chip(this).apply {
+                text = keywords.getString(keyword)
+                isCloseIconVisible = true
+                setOnCloseIconClickListener {
+                    ruleKeywordChipContainer.removeView(this)
+                    var newKeywords = "["
+                    for (i in 0 until ruleKeywordChipContainer.childCount) {
+                        val chip = ruleKeywordChipContainer.getChildAt(i) as? Chip
+                        chip?.let {
+                            newKeywords = newKeywords + "\"" + it.text.toString() + "\","
+                        }
+                    }
+
+                    newKeywords = newKeywords.substring(0, newKeywords.length - 1) + "]"
+                    rule.put("keywords", newKeywords)
+                }
+            }
+            ruleKeywordChipContainer.addView(chip)
+        }
+
 
         ruleAddApps.setOnClickListener {
             val intent = Intent(this, AppSelectActivity::class.java).apply {
@@ -66,12 +116,12 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
             startActivity(intent)
         }
 
-        ruleActiveSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+        ruleActiveSwitch.setOnCheckedChangeListener { _, isChecked ->
             rule.put("active", isChecked)
         }
 
         ruleSaveButton.setOnClickListener {
-            var newRules = loadRulesFromFile(this)
+            val newRules = loadRulesFromFile(this)
             newRules.put(ruleId, rule)
             saveRulesToFile(this, newRules)
 
@@ -84,14 +134,16 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
                 rule.put("filterType", selectedItem)
                 if (rule.getString("filterType") == "All Notifications"){
                     ruleKeywordOperationChip.visibility = View.GONE
+                    ruleAddKeywordsContainer.visibility = View.GONE
+                    ruleKeywordChipContainer.visibility = View.GONE
                 } else{
                     ruleKeywordOperationChip.visibility = View.VISIBLE
+                    ruleAddKeywordsContainer.visibility = View.VISIBLE
+                    ruleKeywordChipContainer.visibility = View.VISIBLE
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Handle case when nothing is selected (optional)
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {  }
         }
 
         ruleName.text = rule.getString("name")
@@ -111,7 +163,6 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
             else rule.put("keywordOperation", "AND")
             ruleKeywordOperationChip.text = rule.getString("keywordOperation")
         }
-
 
     }
 

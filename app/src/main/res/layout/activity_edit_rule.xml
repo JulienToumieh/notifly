@@ -114,18 +114,11 @@
                         app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent" android:id="@+id/edit_rule_keyword_chip_container">
 
-                    <com.google.android.material.chip.Chip
-                            android:text="Chippi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/Widget.Material3.Chip.Input.Elevated"
-                            android:id="@+id/chip6"/>
-
-
                 </com.google.android.material.chip.ChipGroup>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
+                        android:id="@+id/edit_rule_add_keywords_container"
                         android:layout_height="match_parent" app:layout_constraintTop_toBottomOf="@+id/edit_rule_keyword_chip_container">
 
                     <EditText
