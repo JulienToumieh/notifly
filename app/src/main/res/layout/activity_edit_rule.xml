@@ -107,14 +107,46 @@
                     android:layout_height="match_parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
                     tools:layout_editor_absoluteX="6dp">
+                <com.google.android.material.chip.ChipGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" android:id="@+id/chipGroup">
 
-                <TextView
-                        android:text="Keywords"
-                        android:textSize="16dp"
-                        android:layout_margin="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/textView9"
-                        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"/>
+                    <com.google.android.material.chip.Chip
+                            android:text="Chippi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/Widget.Material3.Chip.Input.Elevated"
+                            android:id="@+id/chip6"/>
+
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" app:layout_constraintTop_toBottomOf="@+id/chipGroup">
+
+                    <EditText
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:text=""
+                            android:hint="Enter Keyword"
+                            android:ems="10"
+                            android:id="@+id/editTextText"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/chipGroup"
+                            app:layout_constraintEnd_toStartOf="@+id/textView10"/>
+                    <TextView
+                            android:text="Add"
+                            android:textSize="20dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/textView10"
+                            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

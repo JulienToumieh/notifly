@@ -66,14 +66,14 @@ class NotificationService : NotificationListenerService() {
                         } else {
                             if (keywordsOperation == "OR"){
                                 for (contData in 0 until keywords.length()){
-                                    if (notiData.contains(keywords[contData].toString())){
+                                    if (notiData.lowercase().contains(keywords[contData].toString().lowercase())){
                                         return i
                                     }
                                 }
                             } else if (keywordsOperation == "AND") {
                                 var count = 0
                                 for (contData in 0 until keywords.length()){
-                                    if (notiData.contains(keywords[contData].toString())){
+                                    if (notiData.lowercase().contains(keywords[contData].toString().lowercase())){
                                         count++
                                     }
                                 }
