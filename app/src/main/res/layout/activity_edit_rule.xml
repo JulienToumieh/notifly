@@ -26,14 +26,15 @@
                     android:text="Rule Name"
                     android:textSize="18dp"
                     android:layout_margin="4dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/textView7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/edit_rule_name"
                     app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/edit_rule_activate_switch"/>
             <Switch
                     android:text=""
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/switch1"
+                    android:layout_height="wrap_content" android:id="@+id/edit_rule_activate_switch"
                     app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -54,16 +55,16 @@
                     android:text="Apply To All Apps"
                     android:layout_width="0dp"
                     android:layout_margin="12dp"
-                    android:textSize="18"
-                    android:layout_height="wrap_content" android:id="@+id/textView8"
+                    android:textSize="18dp"
+                    android:layout_height="wrap_content" android:id="@+id/edit_rule_apply_to_apps"
                     app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/imageButton"/>
+                    app:layout_constraintEnd_toStartOf="@+id/edit_rule_add_apps"/>
             <ImageButton
                     android:backgroundTint="#0000"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" app:srcCompat="@drawable/baseline_add_24"
-                    android:id="@+id/imageButton" app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/edit_rule_add_apps" app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"/>
 
 
@@ -85,19 +86,19 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:id="@+id/constraintLayout"
-                    tools:layout_editor_absoluteY="6dp" tools:layout_editor_absoluteX="6dp">
+                    android:layout_height="match_parent" android:id="@+id/constraintLayout">
                 <Spinner
                         android:layout_width="0dp"
-                        android:layout_height="36dp" android:id="@+id/spinner"
+                        android:layout_height="36dp" android:id="@+id/edit_rule_filter_type_spinner"
                         app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/chip"/>
+                        app:layout_constraintEnd_toStartOf="@+id/edit_rule_keyword_operation_chip"/>
                 <com.google.android.material.chip.Chip
                         app:chipMinHeight="42dp"
-                        android:text="AND"
+                        android:text="OR"
                         style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:checkable="false"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp" android:id="@+id/chip"
+                        android:layout_height="36dp" android:id="@+id/edit_rule_keyword_operation_chip"
                         app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -111,7 +112,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" android:id="@+id/chipGroup">
+                        app:layout_constraintEnd_toEndOf="parent" android:id="@+id/edit_rule_keyword_chip_container">
 
                     <com.google.android.material.chip.Chip
                             android:text="Chippi"
@@ -125,7 +126,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" app:layout_constraintTop_toBottomOf="@+id/chipGroup">
+                        android:layout_height="match_parent" app:layout_constraintTop_toBottomOf="@+id/edit_rule_keyword_chip_container">
 
                     <EditText
                             android:layout_width="0dp"
@@ -134,16 +135,16 @@
                             android:text=""
                             android:hint="Enter Keyword"
                             android:ems="10"
-                            android:id="@+id/editTextText"
+                            android:id="@+id/edit_rule_keyword_input_text"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/chipGroup"
-                            app:layout_constraintEnd_toStartOf="@+id/textView10"/>
+                            app:layout_constraintEnd_toStartOf="@+id/edit_rule_add_keyword_button"
+                            app:layout_constraintTop_toTopOf="parent"/>
                     <TextView
                             android:text="Add"
                             android:textSize="20dp"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:id="@+id/textView10"
+                            android:layout_height="wrap_content" android:id="@+id/edit_rule_add_keyword_button"
                             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintTop_toTopOf="parent"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>

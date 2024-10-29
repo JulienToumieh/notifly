@@ -31,9 +31,12 @@ class AppSelectActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        val ruleId = intent.getIntExtra("RULE_ID", 0)
+
         Handler(Looper.getMainLooper()).postDelayed({
             showAppSelector()
-        }, 500)
+        }, 100)
     }
 
     private fun showAppSelector(){

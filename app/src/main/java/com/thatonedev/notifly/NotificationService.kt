@@ -47,7 +47,7 @@ class NotificationService : NotificationListenerService() {
             val rule = ruleArray.getJSONObject(i)
             val apps = JSONArray(rule.getString("apps"))
             val keywords = JSONArray(rule.getString("keywords"))
-            val keywordsOperation = rule.getString("keywordsOperation")
+            val keywordOperation = rule.getString("keywordOperation")
 
             var notiData = ""
             when (rule.getString("filterType")) {
@@ -64,13 +64,13 @@ class NotificationService : NotificationListenerService() {
                         if (rule.getString("filterType") == "All Notifications"){
                             return i
                         } else {
-                            if (keywordsOperation == "OR"){
+                            if (keywordOperation == "OR"){
                                 for (contData in 0 until keywords.length()){
                                     if (notiData.lowercase().contains(keywords[contData].toString().lowercase())){
                                         return i
                                     }
                                 }
-                            } else if (keywordsOperation == "AND") {
+                            } else if (keywordOperation == "AND") {
                                 var count = 0
                                 for (contData in 0 until keywords.length()){
                                     if (notiData.lowercase().contains(keywords[contData].toString().lowercase())){

@@ -29,13 +29,13 @@ class RuleComponent(private val activity: Activity, private val dataSet: JSONArr
         viewHolder.ruleSwitch.isChecked = dataSet.getJSONObject(position).getBoolean("active")
 
         viewHolder.ruleCard.setOnClickListener {
-
+            (activity as? OnDataPass)?.editRule(position)
         }
     }
 
     override fun getItemCount() = dataSet.length()
 
     interface OnDataPass {
-        fun toggleTask(position: Int)
+        fun editRule(ruleId: Int)
     }
 }

@@ -23,7 +23,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
             getSharedPreferences("app", MODE_PRIVATE).edit().putBoolean("firstRun", false).apply()
             val tasksArray = JSONArray()
             saveRulesToFile(this, tasksArray)
-            createRule(this, "Mhmm",true ,"[\"com.whatsapp\"]", "", "", "All Notifications", "[]", "")
         }
 
 
@@ -57,7 +56,10 @@ class MainActivity : AppCompatActivity() {
         refreshRules(loadRulesFromFile(this))
 
         findViewById<FloatingActionButton>(R.id.add_rule_btn).setOnClickListener {
-            startActivity(Intent(Intent(this, EditRuleActivity::class.java)))
+            createRule(this, "New Rule",true ,"[]", "", "", "All Notifications", "[]", "OR")
+
+            val ruleId = loadRulesFromFile(this).length() - 1
+            editRule(ruleId)
         }
     }
 
@@ -76,8 +78,8 @@ class MainActivity : AppCompatActivity() {
             put("apps", apps)
             put("vibration", vibration)
             put("sound", sound)
-            put("filterType", containsType) // ALL Notifications, Notification, Title, Text
-            put("keywordsOperation", containsOperation) // AND, OR
+            put("filterType", containsType) // ALL Notifications, Content, Title, Text
+            put("keywordOperation", containsOperation) // AND, OR
             put("keywords", containsData)
 
         }
@@ -99,6 +101,13 @@ class MainActivity : AppCompatActivity() {
             return JSONArray(jsonString)
         }
         return JSONArray()
+    }
+
+    override fun editRule(ruleId: Int) {
+        val intent = Intent(this, EditRuleActivity::class.java).apply {
+            putExtra("RULE_ID", ruleId)
+        }
+        startActivity(intent)
     }
 
 }
