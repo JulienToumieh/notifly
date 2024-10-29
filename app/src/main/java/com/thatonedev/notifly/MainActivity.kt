@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             getSharedPreferences("app", MODE_PRIVATE).edit().putBoolean("firstRun", false).apply()
             val tasksArray = JSONArray()
             saveRulesToFile(this, tasksArray)
-            createRule(this, "Mhmm", "[\"com.whatsapp\"]", "", "", "All Notifications", "[]", "")
+            createRule(this, "Mhmm",true ,"[\"com.whatsapp\"]", "", "", "All Notifications", "[]", "")
         }
 
 
@@ -68,17 +68,18 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
     }
 
-    private fun createRule(context: Context, name: String, apps: String, vibration: String, sound: String, containsType: String, containsData: String, containsOperation: String) {
-        val rulesArray = loadRulesFromFile(context) ?: JSONArray()
+    private fun createRule(context: Context, name: String, active: Boolean, apps: String, vibration: String, sound: String, containsType: String, containsData: String, containsOperation: String) {
+        val rulesArray = loadRulesFromFile(context)
         val newRule = JSONObject().apply {
             put("name", name)
-            put("active", true)
+            put("active", active)
             put("apps", apps)
             put("vibration", vibration)
             put("sound", sound)
-            put("containsType", containsType) // Notification, Title, Text
-            put("containsData", containsData)
-            put("containsOperation", containsOperation) // AND, OR
+            put("filterType", containsType) // ALL Notifications, Notification, Title, Text
+            put("keywordsOperation", containsOperation) // AND, OR
+            put("keywords", containsData)
+
         }
         rulesArray.put(newRule)
 

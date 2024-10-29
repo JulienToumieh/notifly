@@ -46,11 +46,11 @@ class NotificationService : NotificationListenerService() {
         for (i in 0 until ruleArray.length()) {
             val rule = ruleArray.getJSONObject(i)
             val apps = JSONArray(rule.getString("apps"))
-            val containsData = JSONArray(rule.getString("containsData"))
-            val containsOperation = rule.getString("containsOperation")
+            val keywords = JSONArray(rule.getString("keywords"))
+            val keywordsOperation = rule.getString("keywordsOperation")
 
             var notiData = ""
-            when (rule.getString("containsType")) {
+            when (rule.getString("filterType")) {
                 "Notification" -> notiData = title + " " + text
                 "Title" -> notiData = title
                 "Text" -> notiData = text
@@ -61,23 +61,23 @@ class NotificationService : NotificationListenerService() {
                 for (app in 0 until apps.length()) {
                     if (apps[app] == packageName || apps.length() == 0){
 
-                        if (rule.getString("containsType") == "All Notifications"){
+                        if (rule.getString("filterType") == "All Notifications"){
                             return i
                         } else {
-                            if (containsOperation == "OR"){
-                                for (contData in 0 until containsData.length()){
-                                    if (notiData.contains(containsData[contData].toString())){
+                            if (keywordsOperation == "OR"){
+                                for (contData in 0 until keywords.length()){
+                                    if (notiData.contains(keywords[contData].toString())){
                                         return i
                                     }
                                 }
-                            } else if (containsOperation == "AND") {
+                            } else if (keywordsOperation == "AND") {
                                 var count = 0
-                                for (contData in 0 until containsData.length()){
-                                    if (notiData.contains(containsData[contData].toString())){
+                                for (contData in 0 until keywords.length()){
+                                    if (notiData.contains(keywords[contData].toString())){
                                         count++
                                     }
                                 }
-                                if (count == containsData.length()){
+                                if (count == keywords.length()){
                                     return i
                                 }
                             }
