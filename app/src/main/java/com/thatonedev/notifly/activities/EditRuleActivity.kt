@@ -9,6 +9,7 @@ import android.health.connect.datatypes.AppInfo
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,7 +47,7 @@ class EditRuleActivity : AppCompatActivity() {
             insets
         }
 
-        val filterTypeSpinnerOptions = listOf("All Notifications", "Content", "Title", "Text")
+        val filterTypeSpinnerOptions = listOf("All Notifications", "Full Content", "Title", "Text")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, filterTypeSpinnerOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
@@ -101,6 +102,7 @@ class EditRuleActivity : AppCompatActivity() {
                 }
             }
             newKeywords = newKeywords.substring(0, newKeywords.length - 1) + "]"
+            if (newKeywords == "]") newKeywords = "[]"
             rule.put("keywords", newKeywords)
         }
 
@@ -121,6 +123,7 @@ class EditRuleActivity : AppCompatActivity() {
                     }
 
                     newKeywords = newKeywords.substring(0, newKeywords.length - 1) + "]"
+                    if (newKeywords == "]") newKeywords = "[]"
                     rule.put("keywords", newKeywords)
                 }
             }
@@ -129,6 +132,13 @@ class EditRuleActivity : AppCompatActivity() {
 
 
         ruleAddApps.setOnClickListener {
+            if (JSONArray(rule.getString("keywords")).length() == 0){
+                rule.put("filterType", "All Notifications")
+            }
+            val newRules = loadRulesFromFile(this)
+            newRules.put(ruleId, rule)
+            saveRulesToFile(this, newRules)
+
             val intent = Intent(this, AppSelectActivity::class.java).apply {
                 putExtra("RULE_ID", ruleId)
             }
@@ -140,6 +150,9 @@ class EditRuleActivity : AppCompatActivity() {
         }
 
         ruleSaveButton.setOnClickListener {
+            if (JSONArray(rule.getString("keywords")).length() == 0){
+                rule.put("filterType", "All Notifications")
+            }
             val newRules = loadRulesFromFile(this)
             newRules.put(ruleId, rule)
             saveRulesToFile(this, newRules)

@@ -51,7 +51,7 @@ class NotificationService : NotificationListenerService() {
 
             var notiData = ""
             when (rule.getString("filterType")) {
-                "Notification" -> notiData = title + " " + text
+                "Full Content" -> notiData = title + " " + text
                 "Title" -> notiData = title
                 "Text" -> notiData = text
             }
