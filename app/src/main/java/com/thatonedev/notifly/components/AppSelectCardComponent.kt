@@ -30,13 +30,14 @@ class AppSelectCardComponent(private val activity: Activity, private val dataSet
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val appInfo = filteredDataSet.getJSONObject(position)
         viewHolder.appCardName.text = appInfo.getString("name")
+        viewHolder.appCardCheckBox.isChecked = appInfo.getBoolean("selected")
         //appInfo.getString("packageName")
 
         val iconDrawable = appInfo.get("icon") as Drawable
         viewHolder.appCardIcon.setImageDrawable(iconDrawable)
 
-        viewHolder.appCardCheckBox.setOnClickListener {
-            (activity as? OnDataPass)?.toggleAppCard(position)
+        viewHolder.appCardCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            (activity as? OnDataPass)?.toggleAppCard(appInfo.getString("packageName"), isChecked)
         }
     }
 
@@ -59,6 +60,6 @@ class AppSelectCardComponent(private val activity: Activity, private val dataSet
     }
 
     interface OnDataPass {
-        fun toggleAppCard(position: Int)
+        fun toggleAppCard(packageName: String, selected: Boolean)
     }
 }

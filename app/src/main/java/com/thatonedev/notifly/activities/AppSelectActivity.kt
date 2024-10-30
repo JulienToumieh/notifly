@@ -1,11 +1,14 @@
 package com.thatonedev.notifly.activities
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,14 +16,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
 import com.thatonedev.notifly.components.AppSelectCardComponent
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
-class AppSelectActivity : AppCompatActivity() {
+class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass {
 
     private lateinit var adapter: AppSelectCardComponent
+    private lateinit var selectedApps: JSONArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +38,39 @@ class AppSelectActivity : AppCompatActivity() {
             insets
         }
 
+        var ruleArray = loadRulesFromFile(this)
         val ruleId = intent.getIntExtra("RULE_ID", 0)
+        selectedApps = JSONArray(ruleArray.getJSONObject(ruleId).getString("apps"))
 
         Handler(Looper.getMainLooper()).postDelayed({
             showAppSelector()
         }, 100)
+
+        findViewById<Button>(R.id.app_select_confirm_button).setOnClickListener {
+            ruleArray.put(ruleId, ruleArray.getJSONObject(ruleId).put("apps", selectedApps.toString()))
+            saveRulesToFile(this, ruleArray)
+
+            val intent = Intent(this, EditRuleActivity::class.java).apply {
+                putExtra("RULE_ID", ruleId)
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun saveRulesToFile(context: Context, ruleArray: JSONArray) {
+        val file = File(context.filesDir, "rules.json")
+        file.writeText(ruleArray.toString())
+    }
+
+    private fun loadRulesFromFile(context: Context): JSONArray {
+        val file = File(context.filesDir, "rules.json")
+        if (file.exists()) {
+            val jsonString = file.readText()
+            return JSONArray(jsonString)
+        }
+        return JSONArray()
     }
 
     private fun showAppSelector(){
@@ -63,16 +97,24 @@ class AppSelectActivity : AppCompatActivity() {
         val packageManager = activity.packageManager
         val appsList = mutableListOf<JSONObject>()
 
+        val selectedPackageNames = mutableSetOf<String>()
+        for (i in 0 until selectedApps.length()) {
+            selectedPackageNames.add(selectedApps.getString(i))
+        }
+
         val packages = packageManager.getInstalledApplications(0)
         for (app in packages) {
             val appInfo = packageManager.getApplicationInfo(app.packageName, 0)
             val appName = packageManager.getApplicationLabel(appInfo).toString()
             val iconDrawable = appInfo.loadIcon(packageManager)
 
+            val appSelected = selectedPackageNames.contains(app.packageName)
+
             val jsonObject = JSONObject().apply {
                 put("name", appName)
                 put("packageName", app.packageName)
                 put("icon", iconDrawable)
+                put("selected", appSelected)
             }
             appsList.add(jsonObject)
         }
@@ -80,4 +122,18 @@ class AppSelectActivity : AppCompatActivity() {
 
         return JSONArray(appsList)
     }
+
+    override fun toggleAppCard(packageName: String, selected: Boolean) {
+        if (selected) {
+            selectedApps.put(packageName)
+        } else {
+            for (i in selectedApps.length() - 1 downTo 0) {
+                if (selectedApps.getString(i) == packageName) {
+                    selectedApps.remove(i)
+                    break
+                }
+            }
+        }
+    }
+
 }

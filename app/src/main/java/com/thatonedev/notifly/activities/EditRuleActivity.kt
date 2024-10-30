@@ -3,10 +3,15 @@ package com.thatonedev.notifly.activities
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
+import android.health.connect.datatypes.AppInfo
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,13 +26,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
 import com.thatonedev.notifly.components.AppSelectCardComponent
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
-class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass {
+class EditRuleActivity : AppCompatActivity() {
 
+    private lateinit var adapter: AppAdapter
+    private lateinit var ruleSelectedAppsRecycler: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +64,19 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
         val ruleSaveButton = findViewById<FloatingActionButton>(R.id.edit_rule_save_button)
         val ruleFilterTypeSpinner = findViewById<Spinner>(R.id.edit_rule_filter_type_spinner)
         val ruleAddKeywordsContainer = findViewById<ConstraintLayout>(R.id.edit_rule_add_keywords_container)
+        ruleSelectedAppsRecycler = findViewById(R.id.edit_rule_selected_apps_recycler)
+        ruleSelectedAppsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val ruleAppDisplayContainer = findViewById<ConstraintLayout>(R.id.edit_rule_app_display_container)
         ruleFilterTypeSpinner.adapter = adapter
+
+        if (JSONArray(rule.getString("apps")).length() == 0) {
+            ruleApplyToApps.text = "Apply rule to all apps"
+            ruleAppDisplayContainer.visibility = View.GONE
+        } else {
+            ruleApplyToApps.text = "Apply rule to these apps"
+            ruleAppDisplayContainer.visibility = View.VISIBLE
+            loadAppIcons(JSONArray(rule.getString("apps")))
+        }
 
         ruleFilterTypeSpinner.setSelection(filterTypeSpinnerOptions.indexOf(rule.getString("filterType")))
 
@@ -125,11 +144,14 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
             newRules.put(ruleId, rule)
             saveRulesToFile(this, newRules)
 
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            })
+            finish()
         }
 
         ruleFilterTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 val selectedItem = parent.getItemAtPosition(position).toString()
                 rule.put("filterType", selectedItem)
                 if (rule.getString("filterType") == "All Notifications"){
@@ -181,7 +203,64 @@ class EditRuleActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass 
         file.writeText(ruleArray.toString())
     }
 
-    override fun toggleAppCard(position: Int) {
-        // Handle checkbox toggle logic
+    private fun loadAppIcons(selectedApps: JSONArray) {
+        val packageManager = packageManager
+        val appList = mutableListOf<AppInfo>()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            for (i in 0 until selectedApps.length()) {
+                val packageName = selectedApps.getString(i)
+                val appIcon = getAppIcon(packageManager, packageName)
+
+                appIcon?.let {
+                    appList.add(AppInfo(packageName, it))
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                adapter = AppAdapter(appList)
+                ruleSelectedAppsRecycler.adapter = adapter
+            }
+        }
     }
+
+    private fun getAppIcon(packageManager: PackageManager, packageName: String): Drawable? {
+        return try {
+            val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+            packageManager.getApplicationIcon(applicationInfo)
+        } catch (e: PackageManager.NameNotFoundException) {
+            null
+        }
+    }
+
+    class AppAdapter(private val appList: List<AppInfo>) : RecyclerView.Adapter<AppAdapter.AppViewHolder>() {
+
+        inner class AppViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val appIcon: ImageView = itemView.findViewById(R.id.app_icon)
+            private val appName: TextView = itemView.findViewById(R.id.app_name)
+
+            fun bind(appInfo: AppInfo) {
+                appIcon.setImageDrawable(appInfo.icon)
+                appName.text = appInfo.packageName
+            }
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_app, parent, false)
+            return AppViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
+            holder.bind(appList[position])
+        }
+
+        override fun getItemCount(): Int = appList.size
+    }
+
+    data class AppInfo(
+        val packageName: String,
+        val icon: Drawable?
+    )
+
+
 }

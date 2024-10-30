@@ -26,7 +26,7 @@
                 android:layout_height="0dp"
                 android:layout_margin="10dp"
                 app:layout_constraintTop_toBottomOf="@+id/app_search_bar" app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toTopOf="@+id/button"/>
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toTopOf="@+id/app_select_confirm_button"/>
         <TextView
                 android:text="Installed Apps"
                 android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                 android:text="Select"
                 android:layout_margin="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/button"
+                android:layout_height="wrap_content" android:id="@+id/app_select_confirm_button"
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
