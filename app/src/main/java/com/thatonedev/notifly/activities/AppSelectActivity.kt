@@ -10,6 +10,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -58,6 +59,9 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
             startActivity(intent)
             finish()
         }
+
+
+
     }
 
     private fun saveRulesToFile(context: Context, ruleArray: JSONArray) {
@@ -87,11 +91,15 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                adapter.filter(s.toString())
+                adapter.filter(s.toString(), findViewById<CheckBox>(R.id.app_select_active_checkbox).isChecked)
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        findViewById<CheckBox>(R.id.app_select_active_checkbox).setOnCheckedChangeListener { _, isChecked ->
+            adapter.filter(searchBar.text.toString(), isChecked)
+        }
     }
 
     private fun getInstalledApps(activity: Activity): JSONArray {

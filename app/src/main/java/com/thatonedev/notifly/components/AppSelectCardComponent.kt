@@ -51,14 +51,15 @@ class AppSelectCardComponent(private val activity: Activity, private val dataSet
     override fun getItemCount() = filteredDataSet.length()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun filter(query: String) {
-        filteredDataSet = if (query.isEmpty()) {
+    fun filter(query: String, activeOnly: Boolean) {
+        filteredDataSet = if (query.isEmpty() && !activeOnly) {
             dataSet
         } else {
             val tempList = JSONArray()
             for (i in 0 until dataSet.length()) {
                 val appInfo = dataSet.getJSONObject(i)
-                if (appInfo.getString("name").contains(query, true)) {
+                val isSelected = appInfo.getBoolean("selected")
+                if (appInfo.getString("name").contains(query, true) && (!activeOnly || isSelected)) {
                     tempList.put(appInfo)
                 }
             }
@@ -66,6 +67,7 @@ class AppSelectCardComponent(private val activity: Activity, private val dataSet
         }
         notifyDataSetChanged()
     }
+
 
     interface OnDataPass {
         fun toggleAppCard(packageName: String, selected: Boolean)

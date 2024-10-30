@@ -14,12 +14,13 @@
 
         <EditText
                 android:id="@+id/app_search_bar"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Search apps"
                 android:layout_margin="10dp"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0" app:layout_constraintTop_toBottomOf="@+id/textView"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintEnd_toStartOf="@+id/app_select_active_checkbox"/>
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/app_card_recycler"
                 android:layout_width="match_parent"
@@ -43,6 +44,13 @@
                 android:layout_height="wrap_content" android:id="@+id/app_select_confirm_button"
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
+        <CheckBox
+                android:text=""
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/app_select_active_checkbox"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintBottom_toTopOf="@+id/app_card_recycler"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
