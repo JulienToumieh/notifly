@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
@@ -124,6 +125,8 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
     }
 
     override fun toggleAppCard(packageName: String, selected: Boolean) {
+        Log.d("yawza", selectedApps.toString())
+        Log.d("yawza", packageName)
         if (selected) {
             selectedApps.put(packageName)
         } else {
@@ -134,6 +137,6 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
                 }
             }
         }
+        Log.d("yawza", selectedApps.toString())
     }
-
 }

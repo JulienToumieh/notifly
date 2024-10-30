@@ -1,5 +1,6 @@
 package com.thatonedev.notifly.components
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -36,13 +37,20 @@ class AppSelectCardComponent(private val activity: Activity, private val dataSet
         val iconDrawable = appInfo.get("icon") as Drawable
         viewHolder.appCardIcon.setImageDrawable(iconDrawable)
 
-        viewHolder.appCardCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            (activity as? OnDataPass)?.toggleAppCard(appInfo.getString("packageName"), isChecked)
+        viewHolder.appCardCheckBox.setOnClickListener {
+            appInfo.put("selected", viewHolder.appCardCheckBox.isChecked)
+            (activity as? OnDataPass)?.toggleAppCard(appInfo.getString("packageName"), viewHolder.appCardCheckBox.isChecked)
         }
+
+        /*viewHolder.appCardCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            appInfo.put("selected", isChecked)
+            (activity as? OnDataPass)?.toggleAppCard(appInfo.getString("packageName"), isChecked)
+        }*/
     }
 
     override fun getItemCount() = filteredDataSet.length()
 
+    @SuppressLint("NotifyDataSetChanged")
     fun filter(query: String) {
         filteredDataSet = if (query.isEmpty()) {
             dataSet
