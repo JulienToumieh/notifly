@@ -58,27 +58,51 @@ class NotificationService : NotificationListenerService() {
 
             if (rule.getBoolean("active")) {
 
-                for (app in 0 until apps.length()) {
-                    if (apps[app] == packageName || apps.length() == 0){
+                if (apps.length() == 0){
+                    if (rule.getString("filterType") == "All Notifications"){
+                        return i
+                    } else {
+                        if (keywordOperation == "OR"){
+                            for (contData in 0 until keywords.length()){
+                                if (notiData.lowercase().contains(keywords[contData].toString().lowercase())){
+                                    return i
+                                }
+                            }
+                        } else if (keywordOperation == "AND") {
+                            var count = 0
+                            for (contData in 0 until keywords.length()){
+                                if (notiData.lowercase().contains(keywords[contData].toString().lowercase())){
+                                    count++
+                                }
+                            }
+                            if (count == keywords.length()){
+                                return i
+                            }
+                        }
+                    }
+                } else {
+                    for (app in 0 until apps.length()) {
+                        if (apps[app] == packageName) {
 
-                        if (rule.getString("filterType") == "All Notifications"){
-                            return i
-                        } else {
-                            if (keywordOperation == "OR"){
-                                for (contData in 0 until keywords.length()){
-                                    if (notiData.lowercase().contains(keywords[contData].toString().lowercase())){
+                            if (rule.getString("filterType") == "All Notifications") {
+                                return i
+                            } else {
+                                if (keywordOperation == "OR") {
+                                    for (contData in 0 until keywords.length()) {
+                                        if (notiData.lowercase().contains(keywords[contData].toString().lowercase())) {
+                                            return i
+                                        }
+                                    }
+                                } else if (keywordOperation == "AND") {
+                                    var count = 0
+                                    for (contData in 0 until keywords.length()) {
+                                        if (notiData.lowercase().contains(keywords[contData].toString().lowercase())) {
+                                            count++
+                                        }
+                                    }
+                                    if (count == keywords.length()) {
                                         return i
                                     }
-                                }
-                            } else if (keywordOperation == "AND") {
-                                var count = 0
-                                for (contData in 0 until keywords.length()){
-                                    if (notiData.lowercase().contains(keywords[contData].toString().lowercase())){
-                                        count++
-                                    }
-                                }
-                                if (count == keywords.length()){
-                                    return i
                                 }
                             }
                         }

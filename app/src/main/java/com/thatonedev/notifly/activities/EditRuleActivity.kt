@@ -73,7 +73,7 @@ class EditRuleActivity : AppCompatActivity() {
             ruleApplyToApps.text = "Apply rule to all apps"
             ruleAppDisplayContainer.visibility = View.GONE
         } else {
-            ruleApplyToApps.text = "Apply rule to these apps"
+            ruleApplyToApps.text = "Apply rule to the following app(s)"
             ruleAppDisplayContainer.visibility = View.VISIBLE
             loadAppIcons(JSONArray(rule.getString("apps")))
         }
