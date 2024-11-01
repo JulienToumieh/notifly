@@ -21,7 +21,7 @@
                 android:layout_marginLeft="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView"
-                app:layout_constraintEnd_toStartOf="@+id/app_select_active_checkbox"/>
+                app:layout_constraintEnd_toStartOf="@+id/app_select_all_checkbox"/>
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/app_card_recycler"
                 android:layout_width="match_parent"
@@ -31,13 +31,13 @@
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toTopOf="@+id/app_select_confirm_button"/>
         <TextView
                 android:text="Installed Apps"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="28dp"
                 android:layout_margin="10dp"
                 android:id="@+id/textView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/textView7"/>
         <Button
                 android:text="Select"
                 android:layout_margin="10dp"
@@ -45,13 +45,31 @@
                 android:layout_height="wrap_content" android:id="@+id/app_select_confirm_button"
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
-        <CheckBox
-                android:text=""
-                android:layout_marginRight="12dp"
+
+        <Switch
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/app_select_active_checkbox"
-                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/textView"
-                app:layout_constraintBottom_toTopOf="@+id/app_card_recycler"/>
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:id="@+id/app_select_active_checkbox"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toTopOf="@+id/app_search_bar"/>
+        <TextView
+                android:text="Selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:id="@+id/textView7"
+                app:layout_constraintEnd_toStartOf="@+id/app_select_active_checkbox"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toTopOf="@+id/app_search_bar"/>
+
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:id="@+id/app_select_all_checkbox"
+                app:layout_constraintBottom_toTopOf="@+id/app_card_recycler"
+                app:layout_constraintTop_toBottomOf="@+id/textView" app:layout_constraintEnd_toEndOf="parent"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

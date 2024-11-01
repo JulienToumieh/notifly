@@ -12,6 +12,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.Switch
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -29,6 +30,7 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
 
     private lateinit var adapter: AppSelectCardComponent
     private lateinit var selectedApps: JSONArray
+    private lateinit var appsData: JSONArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +62,9 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
             finish()
         }
 
+        findViewById<CheckBox>(R.id.app_select_all_checkbox).setOnCheckedChangeListener { _, isChecked ->
+            adapter.selectAllApps(isChecked)
+        }
 
 
     }
@@ -82,7 +87,7 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
         val recyclerView = findViewById<RecyclerView>(R.id.app_card_recycler)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val appsData = getInstalledApps(this)
+        appsData = getInstalledApps(this)
         adapter = AppSelectCardComponent(this, appsData)
         recyclerView.adapter = adapter
 
@@ -97,7 +102,7 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        findViewById<CheckBox>(R.id.app_select_active_checkbox).setOnCheckedChangeListener { _, isChecked ->
+        findViewById<Switch>(R.id.app_select_active_checkbox).setOnCheckedChangeListener { _, isChecked ->
             adapter.filter(searchBar.text.toString(), isChecked)
         }
     }
@@ -133,8 +138,6 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
     }
 
     override fun toggleAppCard(packageName: String, selected: Boolean) {
-        Log.d("yawza", selectedApps.toString())
-        Log.d("yawza", packageName)
         if (selected) {
             selectedApps.put(packageName)
         } else {
@@ -145,6 +148,7 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
                 }
             }
         }
-        Log.d("yawza", selectedApps.toString())
     }
+
+
 }

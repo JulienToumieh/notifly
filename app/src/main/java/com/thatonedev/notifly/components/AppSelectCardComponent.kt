@@ -11,9 +11,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.thatonedev.notifly.R
+import com.thatonedev.notifly.activities.AppSelectActivity
 import org.json.JSONArray
 
-class AppSelectCardComponent(private val activity: Activity, private val dataSet: JSONArray) : RecyclerView.Adapter<AppSelectCardComponent.ViewHolder>() {
+class AppSelectCardComponent(private val activity: Activity, private val dataSet: JSONArray) : RecyclerView.Adapter<AppSelectCardComponent.ViewHolder>(){
 
     private var filteredDataSet: JSONArray = dataSet
 
@@ -67,6 +68,28 @@ class AppSelectCardComponent(private val activity: Activity, private val dataSet
         }
         notifyDataSetChanged()
     }
+
+    fun selectAllApps(selected: Boolean) {
+        for (i in 0 until filteredDataSet.length()) {
+            val appInfo = filteredDataSet.getJSONObject(i)
+            appInfo.put("selected", selected)
+        }
+        notifyDataSetChanged()
+
+        // Update the selectedApps JSONArray in AppSelectActivity
+        if (selected) {
+            for (i in 0 until filteredDataSet.length()) {
+                val appInfo = filteredDataSet.getJSONObject(i)
+                (activity as? OnDataPass)?.toggleAppCard(appInfo.getString("packageName"), true)
+            }
+        } else {
+            for (i in 0 until filteredDataSet.length()) {
+                val appInfo = filteredDataSet.getJSONObject(i)
+                (activity as? OnDataPass)?.toggleAppCard(appInfo.getString("packageName"), false)
+            }
+        }
+    }
+
 
 
     interface OnDataPass {
