@@ -139,7 +139,16 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
 
     override fun toggleAppCard(packageName: String, selected: Boolean) {
         if (selected) {
-            selectedApps.put(packageName)
+            var exists = false
+            for (i in selectedApps.length() - 1 downTo 0) {
+                if (selectedApps.getString(i) == packageName) {
+                    exists = true
+                    break
+                }
+            }
+            if (!exists)
+                selectedApps.put(packageName)
+
         } else {
             for (i in selectedApps.length() - 1 downTo 0) {
                 if (selectedApps.getString(i) == packageName) {

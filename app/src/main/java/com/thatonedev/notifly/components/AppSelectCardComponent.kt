@@ -70,26 +70,13 @@ class AppSelectCardComponent(private val activity: Activity, private val dataSet
     }
 
     fun selectAllApps(selected: Boolean) {
-        for (i in 0 until filteredDataSet.length()) {
-            val appInfo = filteredDataSet.getJSONObject(i)
+        for (i in 0 until dataSet.length()) {
+            val appInfo = dataSet.getJSONObject(i)
             appInfo.put("selected", selected)
+            (activity as? OnDataPass)?.toggleAppCard(appInfo.getString("packageName"), selected)
         }
         notifyDataSetChanged()
-
-        // Update the selectedApps JSONArray in AppSelectActivity
-        if (selected) {
-            for (i in 0 until filteredDataSet.length()) {
-                val appInfo = filteredDataSet.getJSONObject(i)
-                (activity as? OnDataPass)?.toggleAppCard(appInfo.getString("packageName"), true)
-            }
-        } else {
-            for (i in 0 until filteredDataSet.length()) {
-                val appInfo = filteredDataSet.getJSONObject(i)
-                (activity as? OnDataPass)?.toggleAppCard(appInfo.getString("packageName"), false)
-            }
-        }
     }
-
 
 
     interface OnDataPass {
