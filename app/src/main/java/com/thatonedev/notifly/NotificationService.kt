@@ -48,6 +48,8 @@ class NotificationService : NotificationListenerService() {
             val apps = JSONArray(rule.getString("apps"))
             val keywords = JSONArray(rule.getString("keywords"))
             val keywordOperation = rule.getString("keywordOperation")
+            val keywordInclusion = rule.getBoolean("keywordInclusion")
+
 
             var notiData = ""
             when (rule.getString("filterType")) {
@@ -64,14 +66,14 @@ class NotificationService : NotificationListenerService() {
                     } else {
                         if (keywordOperation == "OR"){
                             for (contData in 0 until keywords.length()){
-                                if (notiData.lowercase().contains(keywords[contData].toString().lowercase())){
+                                if (notiData.lowercase().contains(keywords[contData].toString().lowercase()).xor(!keywordInclusion)){
                                     return i
                                 }
                             }
                         } else if (keywordOperation == "AND") {
                             var count = 0
                             for (contData in 0 until keywords.length()){
-                                if (notiData.lowercase().contains(keywords[contData].toString().lowercase())){
+                                if (notiData.lowercase().contains(keywords[contData].toString().lowercase()).xor(!keywordInclusion)){
                                     count++
                                 }
                             }
@@ -89,14 +91,14 @@ class NotificationService : NotificationListenerService() {
                             } else {
                                 if (keywordOperation == "OR") {
                                     for (contData in 0 until keywords.length()) {
-                                        if (notiData.lowercase().contains(keywords[contData].toString().lowercase())) {
+                                        if (notiData.lowercase().contains(keywords[contData].toString().lowercase()).xor(!keywordInclusion)) {
                                             return i
                                         }
                                     }
                                 } else if (keywordOperation == "AND") {
                                     var count = 0
                                     for (contData in 0 until keywords.length()) {
-                                        if (notiData.lowercase().contains(keywords[contData].toString().lowercase())) {
+                                        if (notiData.lowercase().contains(keywords[contData].toString().lowercase()).xor(!keywordInclusion)) {
                                             count++
                                         }
                                     }

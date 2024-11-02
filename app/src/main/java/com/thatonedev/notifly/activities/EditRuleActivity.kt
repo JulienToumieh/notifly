@@ -59,6 +59,7 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleAddApps = findViewById<ImageButton>(R.id.edit_rule_add_apps)
         val ruleApplyToApps = findViewById<TextView>(R.id.edit_rule_apply_to_apps)
         val ruleKeywordOperationChip = findViewById<Chip>(R.id.edit_rule_keyword_operation_chip)
+        val ruleKeywordInclusionChip = findViewById<Chip>(R.id.edit_rule_keyword_inclusion_chip)
         val ruleKeywordChipContainer = findViewById<ChipGroup>(R.id.edit_rule_keyword_chip_container)
         val ruleKeywordInputText = findViewById<EditText>(R.id.edit_rule_keyword_input_text)
         val ruleAddKeywordButton = findViewById<TextView>(R.id.edit_rule_add_keyword_button)
@@ -68,7 +69,23 @@ class EditRuleActivity : AppCompatActivity() {
         ruleSelectedAppsRecycler = findViewById(R.id.edit_rule_selected_apps_recycler)
         ruleSelectedAppsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val ruleAppDisplayContainer = findViewById<ConstraintLayout>(R.id.edit_rule_app_display_container)
+
         ruleFilterTypeSpinner.adapter = adapter
+
+        ruleKeywordInclusionChip.setOnClickListener {
+            rule.put("keywordInclusion", !rule.getBoolean("keywordInclusion"))
+            if (rule.getBoolean("keywordInclusion")) {
+                ruleKeywordInclusionChip.text = "INCL"
+            } else {
+                ruleKeywordInclusionChip.text = "EXCL"
+            }
+        }
+
+        if (rule.getBoolean("keywordInclusion")) {
+            ruleKeywordInclusionChip.text = "INCL"
+        } else {
+            ruleKeywordInclusionChip.text = "EXCL"
+        }
 
         if (JSONArray(rule.getString("apps")).length() == 0) {
             ruleApplyToApps.text = "Apply rule to all apps"
@@ -171,10 +188,12 @@ class EditRuleActivity : AppCompatActivity() {
                     ruleKeywordOperationChip.visibility = View.GONE
                     ruleAddKeywordsContainer.visibility = View.GONE
                     ruleKeywordChipContainer.visibility = View.GONE
+                    ruleKeywordInclusionChip.visibility = View.GONE
                 } else{
                     ruleKeywordOperationChip.visibility = View.VISIBLE
                     ruleAddKeywordsContainer.visibility = View.VISIBLE
                     ruleKeywordChipContainer.visibility = View.VISIBLE
+                    ruleKeywordInclusionChip.visibility = View.VISIBLE
                 }
             }
 

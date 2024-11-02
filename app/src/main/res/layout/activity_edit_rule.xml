@@ -117,6 +117,16 @@
                         android:layout_width="0dp"
                         android:layout_height="36dp" android:id="@+id/edit_rule_filter_type_spinner"
                         app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/edit_rule_keyword_inclusion_chip"/>
+                <com.google.android.material.chip.Chip
+                        app:chipMinHeight="42dp"
+                        android:text="INCL"
+                        android:layout_marginRight="10dp"
+                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        android:checkable="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp" android:id="@+id/edit_rule_keyword_inclusion_chip"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/edit_rule_keyword_operation_chip"/>
                 <com.google.android.material.chip.Chip
                         app:chipMinHeight="42dp"

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.Switch
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -17,6 +18,7 @@ class RuleComponent(private val activity: Activity, private val dataSet: JSONArr
         val ruleName: TextView = view.findViewById(R.id.rule_name)
         val ruleSwitch: Switch = view.findViewById(R.id.rule_switch)
         val ruleCard: CardView = view.findViewById(R.id.rule_card)
+        val ruleDelete: ImageButton = view.findViewById(R.id.rule_delete_button)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -35,6 +37,10 @@ class RuleComponent(private val activity: Activity, private val dataSet: JSONArr
         viewHolder.ruleCard.setOnClickListener {
             (activity as? OnDataPass)?.editRule(position)
         }
+
+        viewHolder.ruleDelete.setOnClickListener {
+            (activity as? OnDataPass)?.deleteRule(position)
+        }
     }
 
     override fun getItemCount() = dataSet.length()
@@ -42,5 +48,6 @@ class RuleComponent(private val activity: Activity, private val dataSet: JSONArr
     interface OnDataPass {
         fun editRule(ruleId: Int)
         fun activateRule(ruleId: Int, active: Boolean)
+        fun deleteRule(ruleId: Int)
     }
 }

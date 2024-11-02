@@ -80,6 +80,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
             put("sound", sound)
             put("filterType", containsType) // ALL Notifications, Content, Title, Text
             put("keywordOperation", containsOperation) // AND, OR
+            put("keywordInclusion", true)
             put("keywords", containsData)
 
         }
@@ -116,6 +117,13 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
         rule.put("active", active)
         newRules.put(ruleId, rule)
         saveRulesToFile(this, newRules)
+    }
+
+    override fun deleteRule(ruleId: Int) {
+        var newRules = loadRulesFromFile(this)
+        newRules.remove(ruleId)
+        saveRulesToFile(this, newRules)
+        refreshRules(loadRulesFromFile(this))
     }
 
 }
