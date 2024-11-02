@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.thatonedev.notifly.R
-import com.thatonedev.notifly.activities.AppSelectActivity
 import org.json.JSONArray
 
 class AppSelectCardComponent(private val activity: Activity, private val dataSet: JSONArray) : RecyclerView.Adapter<AppSelectCardComponent.ViewHolder>(){
@@ -69,6 +68,7 @@ class AppSelectCardComponent(private val activity: Activity, private val dataSet
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun selectAllApps(selected: Boolean) {
         for (i in 0 until dataSet.length()) {
             val appInfo = dataSet.getJSONObject(i)

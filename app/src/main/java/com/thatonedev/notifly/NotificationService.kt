@@ -12,7 +12,7 @@ import java.io.File
 
 class NotificationService : NotificationListenerService() {
 
-    lateinit var ruleArray: JSONArray
+    private lateinit var ruleArray: JSONArray
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         ruleArray = loadRulesFromFile(this)

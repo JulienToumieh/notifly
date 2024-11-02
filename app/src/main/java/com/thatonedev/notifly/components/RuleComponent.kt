@@ -1,6 +1,7 @@
 package com.thatonedev.notifly.components
 
 import android.app.Activity
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,9 @@ import android.widget.ImageButton
 import android.widget.Switch
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
 import org.json.JSONArray
 
@@ -29,6 +32,7 @@ class RuleComponent(private val activity: Activity, private val dataSet: JSONArr
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.ruleName.text = dataSet.getJSONObject(position).getString("name").toString()
         viewHolder.ruleSwitch.isChecked = dataSet.getJSONObject(position).getBoolean("active")
+
 
         viewHolder.ruleSwitch.setOnCheckedChangeListener { _, isChecked ->
             (activity as? OnDataPass)?.activateRule(position, isChecked)

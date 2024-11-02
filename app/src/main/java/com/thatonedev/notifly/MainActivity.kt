@@ -39,15 +39,11 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
             startActivity(Intent(Intent(this, PermissionActivity::class.java)))
         }
 
-
-
         if (getSharedPreferences("app", MODE_PRIVATE).getBoolean("firstRun", true)) {
             getSharedPreferences("app", MODE_PRIVATE).edit().putBoolean("firstRun", false).apply()
             val tasksArray = JSONArray()
             saveRulesToFile(this, tasksArray)
         }
-
-
 
         refreshRules(loadRulesFromFile(this))
 
@@ -116,7 +112,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
     }
 
     override fun deleteRule(ruleId: Int) {
-        var newRules = loadRulesFromFile(this)
+        val newRules = loadRulesFromFile(this)
         newRules.remove(ruleId)
         saveRulesToFile(this, newRules)
         refreshRules(loadRulesFromFile(this))
