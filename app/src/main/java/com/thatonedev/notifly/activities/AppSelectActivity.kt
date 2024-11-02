@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -19,7 +18,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
 import com.thatonedev.notifly.components.AppSelectCardComponent
 import org.json.JSONArray
@@ -42,7 +40,7 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
             insets
         }
 
-        var ruleArray = loadRulesFromFile(this)
+        val ruleArray = loadRulesFromFile(this)
         val ruleId = intent.getIntExtra("RULE_ID", 0)
         selectedApps = JSONArray(ruleArray.getJSONObject(ruleId).getString("apps"))
 

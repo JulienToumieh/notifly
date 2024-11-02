@@ -1,21 +1,18 @@
 package com.thatonedev.notifly.activities
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.health.connect.datatypes.AppInfo
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -26,10 +23,11 @@ import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
-import com.thatonedev.notifly.components.AppSelectCardComponent
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.File
 
 class EditRuleActivity : AppCompatActivity() {
@@ -54,7 +52,12 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleId = intent.getIntExtra("RULE_ID", 0)
         val rule = loadRulesFromFile(this).getJSONObject(ruleId)
 
+
+
         val ruleName = findViewById<TextView>(R.id.edit_rule_name)
+        val ruleNameEditPopup = findViewById<CardView>(R.id.edit_rule_name_popup)
+        val ruleNameInput = findViewById<EditText>(R.id.edit_rule_name_input)
+        val ruleNameSaveButton = findViewById<Button>(R.id.edit_rule_name_save_button)
         val ruleActiveSwitch = findViewById<Switch>(R.id.edit_rule_activate_switch)
         val ruleAddApps = findViewById<ImageButton>(R.id.edit_rule_add_apps)
         val ruleApplyToApps = findViewById<TextView>(R.id.edit_rule_apply_to_apps)
@@ -71,6 +74,20 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleAppDisplayContainer = findViewById<ConstraintLayout>(R.id.edit_rule_app_display_container)
 
         ruleFilterTypeSpinner.adapter = adapter
+
+        ruleName.setOnClickListener {
+            ruleNameInput.setText(rule.getString("name"))
+            ruleNameEditPopup.visibility = View.VISIBLE
+        }
+        ruleNameEditPopup.setOnClickListener {
+            ruleNameEditPopup.visibility = View.GONE
+        }
+        ruleNameSaveButton.setOnClickListener {
+            rule.put("name", ruleNameInput.text.toString())
+            ruleName.text = rule.getString("name")
+            ruleNameEditPopup.visibility = View.GONE
+        }
+
 
         ruleKeywordInclusionChip.setOnClickListener {
             rule.put("keywordInclusion", !rule.getBoolean("keywordInclusion"))

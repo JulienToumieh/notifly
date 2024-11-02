@@ -2,16 +2,12 @@ package com.thatonedev.notifly
 
 import android.app.Notification
 import android.content.Context
-import android.media.MediaPlayer
-import android.net.Uri
-import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.File
 
 class NotificationService : NotificationListenerService() {
@@ -41,7 +37,7 @@ class NotificationService : NotificationListenerService() {
     }
 
     private fun shouldCustomizeNotification(packageName: String, title: String, text: String): Int {
-        Log.d("notification",packageName + " - " + title + " - " + text)
+        Log.d("notification", "$packageName - $title - $text")
 
         for (i in 0 until ruleArray.length()) {
             val rule = ruleArray.getJSONObject(i)
@@ -58,7 +54,7 @@ class NotificationService : NotificationListenerService() {
 
             var notiData = ""
             when (rule.getString("filterType")) {
-                "Full Content" -> notiData = title + " " + text
+                "Full Content" -> notiData = "$title $text"
                 "Title" -> notiData = title
                 "Text" -> notiData = text
             }
@@ -126,12 +122,8 @@ class NotificationService : NotificationListenerService() {
         // Trigger custom vibration pattern
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         val vibrationPattern = longArrayOf(0, 200, 100, 300) // Custom pattern
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val vibrationEffect = VibrationEffect.createWaveform(vibrationPattern, -1)
-            vibrator.vibrate(vibrationEffect)
-        } else {
-            vibrator.vibrate(vibrationPattern, -1)
-        }
+        val vibrationEffect = VibrationEffect.createWaveform(vibrationPattern, -1)
+        vibrator.vibrate(vibrationEffect)
 
         // Play custom sound
         /*
