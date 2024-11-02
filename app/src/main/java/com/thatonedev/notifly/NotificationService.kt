@@ -47,8 +47,13 @@ class NotificationService : NotificationListenerService() {
             val rule = ruleArray.getJSONObject(i)
             val apps = JSONArray(rule.getString("apps"))
             val keywords = JSONArray(rule.getString("keywords"))
-            val keywordOperation = rule.getString("keywordOperation")
+            var keywordOperation = rule.getString("keywordOperation")
             val keywordInclusion = rule.getBoolean("keywordInclusion")
+
+            if (!keywordInclusion) {
+                keywordOperation = if (keywordOperation == "AND") "OR"
+                else "AND"
+            }
 
 
             var notiData = ""
@@ -66,14 +71,14 @@ class NotificationService : NotificationListenerService() {
                     } else {
                         if (keywordOperation == "OR"){
                             for (contData in 0 until keywords.length()){
-                                if (notiData.lowercase().contains(keywords[contData].toString().lowercase()).xor(!keywordInclusion)){
+                                if (notiData.lowercase().contains(keywords[contData].toString().lowercase()) == keywordInclusion){
                                     return i
                                 }
                             }
                         } else if (keywordOperation == "AND") {
                             var count = 0
                             for (contData in 0 until keywords.length()){
-                                if (notiData.lowercase().contains(keywords[contData].toString().lowercase()).xor(!keywordInclusion)){
+                                if (notiData.lowercase().contains(keywords[contData].toString().lowercase()) == keywordInclusion){
                                     count++
                                 }
                             }
@@ -91,20 +96,21 @@ class NotificationService : NotificationListenerService() {
                             } else {
                                 if (keywordOperation == "OR") {
                                     for (contData in 0 until keywords.length()) {
-                                        if (notiData.lowercase().contains(keywords[contData].toString().lowercase()).xor(!keywordInclusion)) {
+                                        if (notiData.lowercase().contains(keywords[contData].toString().lowercase()) == keywordInclusion) {
                                             return i
                                         }
                                     }
                                 } else if (keywordOperation == "AND") {
                                     var count = 0
                                     for (contData in 0 until keywords.length()) {
-                                        if (notiData.lowercase().contains(keywords[contData].toString().lowercase()).xor(!keywordInclusion)) {
+                                        if (notiData.lowercase().contains(keywords[contData].toString().lowercase()) == keywordInclusion) {
                                             count++
                                         }
                                     }
                                     if (count == keywords.length()) {
                                         return i
                                     }
+
                                 }
                             }
                         }
@@ -114,6 +120,7 @@ class NotificationService : NotificationListenerService() {
         }
         return -1
     }
+
 
     private fun triggerCustomVibrationAndSound() {
         // Trigger custom vibration pattern

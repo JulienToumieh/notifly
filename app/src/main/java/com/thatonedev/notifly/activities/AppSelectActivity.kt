@@ -96,13 +96,13 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                adapter.filter(s.toString(), findViewById<CheckBox>(R.id.app_select_active_checkbox).isChecked)
+                adapter.filter(s.toString(), findViewById<Switch>(R.id.app_select_active_switch).isChecked)
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        findViewById<Switch>(R.id.app_select_active_checkbox).setOnCheckedChangeListener { _, isChecked ->
+        findViewById<Switch>(R.id.app_select_active_switch).setOnCheckedChangeListener { _, isChecked ->
             adapter.filter(searchBar.text.toString(), isChecked)
         }
     }
