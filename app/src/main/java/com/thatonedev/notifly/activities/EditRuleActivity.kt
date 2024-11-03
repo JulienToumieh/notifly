@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
+import com.thatonedev.notifly.components.VibrationStepComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -70,7 +72,30 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleAddKeywordsContainer = findViewById<ConstraintLayout>(R.id.edit_rule_add_keywords_container)
         ruleSelectedAppsRecycler = findViewById(R.id.edit_rule_selected_apps_recycler)
         ruleSelectedAppsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        val ruleVibrationStepContainer = findViewById<LinearLayout>(R.id.edit_rule_vibration_step_container)
         val ruleAppDisplayContainer = findViewById<ConstraintLayout>(R.id.edit_rule_app_display_container)
+
+
+
+
+
+
+        val vibrationStepComponent = VibrationStepComponent(this)
+        vibrationStepComponent.setProps("0.5s", true, 1f)
+        ruleVibrationStepContainer.addView(vibrationStepComponent)
+
+
+        val vibrationStepComponent2 = VibrationStepComponent(this)
+        vibrationStepComponent2.setProps("0.5s", false, 1f)
+        ruleVibrationStepContainer.addView(vibrationStepComponent2)
+
+
+
+
+
+
+
 
         ruleFilterTypeSpinner.adapter = adapter
 
