@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
         refreshRules(loadRulesFromFile(this))
 
         findViewById<FloatingActionButton>(R.id.add_rule_btn).setOnClickListener {
-            createRule(this, "New Rule",true ,"[]", "", "", "All Notifications", "[]", "OR")
+            createRule(this, "New Rule",true ,"[]", false, "", false, "", "All Notifications", "[]", "OR")
 
             val ruleId = loadRulesFromFile(this).length() - 1
             editRule(ruleId)
@@ -62,14 +62,16 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
         recyclerView.adapter = adapter
     }
 
-    private fun createRule(context: Context, name: String, active: Boolean, apps: String, vibration: String, sound: String, containsType: String, containsData: String, containsOperation: String) {
+    private fun createRule(context: Context, name: String, active: Boolean, apps: String, vibration: Boolean, vibrationPattern: String, sound: Boolean, selectedSound: String,containsType: String, containsData: String, containsOperation: String) {
         val rulesArray = loadRulesFromFile(context)
         val newRule = JSONObject().apply {
             put("name", name)
             put("active", active)
             put("apps", apps)
             put("vibration", vibration)
+            put("vibrationPattern", vibrationPattern)
             put("sound", sound)
+            put("selectedSound", selectedSound)
             put("filterType", containsType) // ALL Notifications, Content, Title, Text
             put("keywordOperation", containsOperation) // AND, OR
             put("keywordInclusion", true)

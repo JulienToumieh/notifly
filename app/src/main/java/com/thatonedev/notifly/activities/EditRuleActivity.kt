@@ -77,7 +77,40 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleAppDisplayContainer = findViewById<ConstraintLayout>(R.id.edit_rule_app_display_container)
 
 
+        val ruleToggleVibrationSwitch = findViewById<Switch>(R.id.edit_rule_toggle_vibration_switch)
+        if (rule.getBoolean("vibration")){
+            findViewById<ConstraintLayout>(R.id.edit_rule_edit_vibration_container).visibility = View.VISIBLE
+        } else {
+            findViewById<ConstraintLayout>(R.id.edit_rule_edit_vibration_container).visibility = View.GONE
+        }
+        ruleToggleVibrationSwitch.isChecked = rule.getBoolean("vibration")
 
+
+        ruleToggleVibrationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            rule.put("vibration", isChecked)
+            if (isChecked){
+                findViewById<ConstraintLayout>(R.id.edit_rule_edit_vibration_container).visibility = View.VISIBLE
+            } else {
+                findViewById<ConstraintLayout>(R.id.edit_rule_edit_vibration_container).visibility = View.GONE
+            }
+        }
+
+        val ruleToggleSoundSwitch = findViewById<Switch>(R.id.edit_rule_toggle_sound_switch)
+        if (rule.getBoolean("sound")){
+            findViewById<ConstraintLayout>(R.id.edit_rule_edit_sound_container).visibility = View.VISIBLE
+        } else {
+            findViewById<ConstraintLayout>(R.id.edit_rule_edit_sound_container).visibility = View.GONE
+        }
+        ruleToggleSoundSwitch.isChecked = rule.getBoolean("sound")
+
+        ruleToggleSoundSwitch.setOnCheckedChangeListener { _, isChecked ->
+            rule.put("sound", isChecked)
+            if (isChecked){
+                findViewById<ConstraintLayout>(R.id.edit_rule_edit_sound_container).visibility = View.VISIBLE
+            } else {
+                findViewById<ConstraintLayout>(R.id.edit_rule_edit_sound_container).visibility = View.GONE
+            }
+        }
 
 
 
