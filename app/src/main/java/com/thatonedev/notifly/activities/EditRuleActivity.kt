@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -53,6 +55,7 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleId = intent.getIntExtra("RULE_ID", 0)
         val rule = loadRulesFromFile(this).getJSONObject(ruleId)
 
+        var vibrationStepMode = 1
 
 
         val ruleName = findViewById<TextView>(R.id.edit_rule_name)
@@ -75,7 +78,13 @@ class EditRuleActivity : AppCompatActivity() {
 
         val ruleVibrationStepContainer = findViewById<LinearLayout>(R.id.edit_rule_vibration_step_container)
         val ruleAppDisplayContainer = findViewById<ConstraintLayout>(R.id.edit_rule_app_display_container)
+        val ruleVibrationStepModeChip = findViewById<Chip>(R.id.edit_rule_vibration_step_mode_chip)
 
+        if (vibrationStepMode == 0){
+            ruleVibrationStepModeChip.text = "Add: Silence"
+        } else {
+            ruleVibrationStepModeChip.text = "Add: Vibration"
+        }
 
         val ruleToggleVibrationSwitch = findViewById<Switch>(R.id.edit_rule_toggle_vibration_switch)
         if (rule.getBoolean("vibration")){
@@ -113,20 +122,88 @@ class EditRuleActivity : AppCompatActivity() {
         }
 
 
+        fun updateVibrationStepUI() {
+            ruleVibrationStepContainer.removeAllViews()
+            val pattern = JSONArray(rule.getString("vibrationPattern"))
 
-        val vibrationStepComponent = VibrationStepComponent(this)
-        vibrationStepComponent.setProps("0.5s", true, 1f)
-        ruleVibrationStepContainer.addView(vibrationStepComponent)
+            var maxWeight = 0
+            for (i in 0 until pattern.length()) {
+                maxWeight += pattern.getInt(i)
+            }
+
+            for (i in 0 until pattern.length()) {
+                val vibrationStepComponent = VibrationStepComponent(this)
+                vibrationStepComponent.setProps((pattern.getInt(i).toFloat()/1000).toString() + "s", i % 2 != 0, pattern.getInt(i).toFloat()/maxWeight)
+                ruleVibrationStepContainer.addView(vibrationStepComponent)
+            }
+        }
 
 
-        val vibrationStepComponent2 = VibrationStepComponent(this)
-        vibrationStepComponent2.setProps("0.5s", false, 1f)
-        ruleVibrationStepContainer.addView(vibrationStepComponent2)
+        fun addVibrationStep(length: Int) {
+            val pattern = JSONArray(rule.getString("vibrationPattern"))
+
+            if (pattern.length() != 0 || vibrationStepMode != 0) {
+                if (pattern.length() % 2 == vibrationStepMode) {
+                    pattern.put(pattern.length() - 1, pattern.getInt(pattern.length() - 1) + length)
+                } else {
+                    pattern.put(length)
+                }
+            }
+
+            updateVibrationStepUI()
+
+            rule.put("vibrationPattern", pattern.toString())
+        }
 
 
 
+        findViewById<Button>(R.id.edit_rule_vibration_clear_button).setOnClickListener {
+            rule.put("vibrationPattern", "[]")
+            updateVibrationStepUI()
+        }
 
+        findViewById<Button>(R.id.edit_rule_vibration_preview_button).setOnClickListener {
+            if (rule.getString("vibrationPattern") != "[]"){
+                val stringValues = rule.getString("vibrationPattern").trim('[', ']').split(",").map { it.trim() }
+                val vibrationPattern = longArrayOf(0) + stringValues.map { it.toLong() }.toLongArray()
 
+                val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                val vibrationEffect = VibrationEffect.createWaveform(vibrationPattern, -1)
+                vibrator.vibrate(vibrationEffect)
+            }
+        }
+
+        ruleVibrationStepModeChip.setOnClickListener {
+            if (vibrationStepMode != 0){
+                ruleVibrationStepModeChip.text = "Add: Silence"
+                vibrationStepMode = 0
+            } else {
+                ruleVibrationStepModeChip.text = "Add: Vibration"
+                vibrationStepMode = 1
+            }
+        }
+
+        findViewById<Button>(R.id.edit_rule_vibration_XXS).setOnClickListener {
+            addVibrationStep(10)
+        }
+        findViewById<Button>(R.id.edit_rule_vibration_XS).setOnClickListener {
+            addVibrationStep(50)
+        }
+        findViewById<Button>(R.id.edit_rule_vibration_S).setOnClickListener {
+            addVibrationStep(150)
+        }
+        findViewById<Button>(R.id.edit_rule_vibration_M).setOnClickListener {
+            addVibrationStep(400)
+        }
+        findViewById<Button>(R.id.edit_rule_vibration_L).setOnClickListener {
+            addVibrationStep(700)
+        }
+        findViewById<Button>(R.id.edit_rule_vibration_XL).setOnClickListener {
+            addVibrationStep(1000)
+        }
+        findViewById<Button>(R.id.edit_rule_vibration_XXL).setOnClickListener {
+            addVibrationStep(2000)
+        }
 
 
 
@@ -241,9 +318,12 @@ class EditRuleActivity : AppCompatActivity() {
         }
 
         ruleSaveButton.setOnClickListener {
-            if (JSONArray(rule.getString("keywords")).length() == 0){
+            if (JSONArray(rule.getString("keywords")).length() == 0)
                 rule.put("filterType", "All Notifications")
-            }
+
+            if (JSONArray(rule.getString("vibrationPattern")).length() == 0)
+                rule.put("vibration", false)
+
             val newRules = loadRulesFromFile(this)
             newRules.put(ruleId, rule)
             saveRulesToFile(this, newRules)

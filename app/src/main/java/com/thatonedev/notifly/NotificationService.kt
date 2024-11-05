@@ -2,6 +2,8 @@ package com.thatonedev.notifly
 
 import android.app.Notification
 import android.content.Context
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.service.notification.NotificationListenerService
@@ -23,7 +25,16 @@ class NotificationService : NotificationListenerService() {
         // Check if notification matches criteria
         val ruleId = shouldCustomizeNotification(packageName, notificationTitle, notificationText)
         if (ruleId != -1) {
-            triggerCustomVibrationAndSound()
+            val rule = ruleArray.getJSONObject(ruleId)
+
+            if (rule.getBoolean("vibration")){
+                triggerCustomVibration(rule.getString("vibrationPattern"))
+            }
+
+            if (rule.getBoolean("sound")){
+                triggerCustomSound(rule.getString("selectedSound"))
+            }
+
         }
     }
 
@@ -118,19 +129,22 @@ class NotificationService : NotificationListenerService() {
     }
 
 
-    private fun triggerCustomVibrationAndSound() {
-        // Trigger custom vibration pattern
+    private fun triggerCustomVibration(vibration: String) {
+        val stringValues = vibration.trim('[', ']').split(",").map { it.trim() }
+        val vibrationPattern = longArrayOf(0) + stringValues.map { it.toLong() }.toLongArray()
+
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        val vibrationPattern = longArrayOf(0, 200, 100, 300) // Custom pattern
         val vibrationEffect = VibrationEffect.createWaveform(vibrationPattern, -1)
         vibrator.vibrate(vibrationEffect)
+    }
 
-        // Play custom sound
-        /*
+    private fun triggerCustomSound(sound: String) {
+
         val soundUri: Uri = Uri.parse("android.resource://${packageName}/raw/custom_sound")
         val mediaPlayer = MediaPlayer.create(this, soundUri)
         mediaPlayer.setOnCompletionListener { it.release() }
         mediaPlayer.start()
-        */
+
     }
+
 }

@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
         refreshRules(loadRulesFromFile(this))
 
         findViewById<FloatingActionButton>(R.id.add_rule_btn).setOnClickListener {
-            createRule(this, "New Rule",true ,"[]", false, "", false, "", "All Notifications", "[]", "OR")
+            createRule(this, "New Rule",true ,"[]", false, "[]", false, "", "All Notifications", "[]", "OR")
 
             val ruleId = loadRulesFromFile(this).length() - 1
             editRule(ruleId)
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
             put("active", active)
             put("apps", apps)
             put("vibration", vibration)
-            put("vibrationPattern", vibrationPattern)
+            put("vibrationPattern", vibrationPattern) // [1000, 300, 200]
             put("sound", sound)
             put("selectedSound", selectedSound)
             put("filterType", containsType) // ALL Notifications, Content, Title, Text
