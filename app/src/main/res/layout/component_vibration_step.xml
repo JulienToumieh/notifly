@@ -3,18 +3,20 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        app:cardBackgroundColor="?attr/colorOnPrimary"
+        app:cardBackgroundColor="?attr/colorPrimary"
         android:id="@+id/vibration_step_card"
         app:cardCornerRadius="10dp"
-        android:layout_margin="4dp"
+        android:layout_margin="3dp"
         android:layout_height="40dp">
 
     <TextView
+            android:id="@+id/vibration_step_value"
+            android:textColor="?attr/colorOnPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:text="0.5s"
             android:textStyle="bold"
             android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/vibration_step_value"
-            android:textAlignment="center"/>
+            android:textAlignment="center" />
+
 </androidx.cardview.widget.CardView>

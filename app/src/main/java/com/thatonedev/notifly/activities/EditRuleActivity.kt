@@ -133,7 +133,7 @@ class EditRuleActivity : AppCompatActivity() {
 
             for (i in 0 until pattern.length()) {
                 val vibrationStepComponent = VibrationStepComponent(this)
-                vibrationStepComponent.setProps((pattern.getInt(i).toFloat()/1000).toString() + "s", i % 2 != 0, pattern.getInt(i).toFloat()/maxWeight)
+                vibrationStepComponent.setProps((pattern.getInt(i).toFloat()/1000).toString() + "s", i % 2 == 0, pattern.getInt(i).toFloat()/maxWeight)
                 ruleVibrationStepContainer.addView(vibrationStepComponent)
             }
         }
@@ -150,11 +150,11 @@ class EditRuleActivity : AppCompatActivity() {
                 }
             }
 
-            updateVibrationStepUI()
-
             rule.put("vibrationPattern", pattern.toString())
+            updateVibrationStepUI()
         }
 
+        updateVibrationStepUI()
 
 
         findViewById<Button>(R.id.edit_rule_vibration_clear_button).setOnClickListener {
