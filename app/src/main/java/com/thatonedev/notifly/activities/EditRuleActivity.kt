@@ -81,9 +81,9 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleVibrationStepModeChip = findViewById<Chip>(R.id.edit_rule_vibration_step_mode_chip)
 
         if (vibrationStepMode == 0){
-            ruleVibrationStepModeChip.text = "Add: Silence"
+            ruleVibrationStepModeChip.text = "Silence"
         } else {
-            ruleVibrationStepModeChip.text = "Add: Vibration"
+            ruleVibrationStepModeChip.text = "Vibration"
         }
 
         val ruleToggleVibrationSwitch = findViewById<Switch>(R.id.edit_rule_toggle_vibration_switch)
@@ -157,8 +157,12 @@ class EditRuleActivity : AppCompatActivity() {
         updateVibrationStepUI()
 
 
-        findViewById<Button>(R.id.edit_rule_vibration_clear_button).setOnClickListener {
-            rule.put("vibrationPattern", "[]")
+        findViewById<Button>(R.id.edit_rule_vibration_undo_button).setOnClickListener {
+            val pattern = JSONArray(rule.getString("vibrationPattern"))
+            pattern.remove(pattern.length() - 1)
+            
+            rule.put("vibrationPattern", pattern.toString())
+
             updateVibrationStepUI()
         }
 
@@ -175,10 +179,10 @@ class EditRuleActivity : AppCompatActivity() {
 
         ruleVibrationStepModeChip.setOnClickListener {
             if (vibrationStepMode != 0){
-                ruleVibrationStepModeChip.text = "Add: Silence"
+                ruleVibrationStepModeChip.text = "Silence"
                 vibrationStepMode = 0
             } else {
-                ruleVibrationStepModeChip.text = "Add: Vibration"
+                ruleVibrationStepModeChip.text = "Vibration"
                 vibrationStepMode = 1
             }
         }

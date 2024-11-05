@@ -256,13 +256,13 @@
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"/>
                         <Button
-                                android:text="Clear"
+                                android:text="Undo"
                                 android:layout_width="wrap_content"
                                 android:padding="0dp"
                                 style="@style/Widget.Material3.Button.TextButton"
                                 android:drawablePadding="0dp"
-                                android:drawableRight="@drawable/baseline_clear_all_24"
-                                android:layout_height="wrap_content" android:id="@+id/edit_rule_vibration_clear_button"
+                                android:drawableRight="@drawable/baseline_undo_24"
+                                android:layout_height="wrap_content" android:id="@+id/edit_rule_vibration_undo_button"
                                 app:layout_constraintEnd_toStartOf="@+id/edit_rule_vibration_step_mode_chip"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
