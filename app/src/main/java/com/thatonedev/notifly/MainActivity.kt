@@ -3,8 +3,11 @@ package com.thatonedev.notifly
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -48,7 +51,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
         refreshRules(loadRulesFromFile(this))
 
         findViewById<FloatingActionButton>(R.id.add_rule_btn).setOnClickListener {
-            createRule(this, "New Rule",true ,"[]", false, "[]", false, "", "All Notifications", "[]", "OR")
+            createRule(this, "New Rule",true ,"[]", false, "[]", false, getDefaultNotificationSound(), "All Notifications", "[]", "OR")
 
             val ruleId = loadRulesFromFile(this).length() - 1
             editRule(ruleId)
@@ -118,6 +121,12 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
         newRules.remove(ruleId)
         saveRulesToFile(this, newRules)
         refreshRules(loadRulesFromFile(this))
+    }
+
+
+    private fun getDefaultNotificationSound(): String {
+        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        return defaultSoundUri.toString()
     }
 
 }

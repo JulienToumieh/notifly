@@ -219,6 +219,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
+                        android:visibility="gone"
                         android:layout_height="wrap_content" android:id="@+id/edit_rule_edit_vibration_container"
                         app:layout_constraintTop_toBottomOf="@+id/edit_rule_toggle_vibration_switch"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -416,10 +417,11 @@
                         app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
 
                     <TextView
-                            android:text="TextView"
+                            android:text="Notification Sound"
                             android:textSize="16dp"
+                            android:textColor="#A5A5A5"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" android:id="@+id/textView12"
+                            android:layout_height="wrap_content" android:id="@+id/edit_rule_selected_sound"
                             app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/imageButton"/>

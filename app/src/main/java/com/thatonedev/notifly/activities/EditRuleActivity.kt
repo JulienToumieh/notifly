@@ -1,9 +1,12 @@
 package com.thatonedev.notifly.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -31,12 +34,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 
 class EditRuleActivity : AppCompatActivity() {
 
     private lateinit var adapter: AppAdapter
     private lateinit var ruleSelectedAppsRecycler: RecyclerView
+    private lateinit var rule: JSONObject
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +59,7 @@ class EditRuleActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         val ruleId = intent.getIntExtra("RULE_ID", 0)
-        val rule = loadRulesFromFile(this).getJSONObject(ruleId)
+        rule = loadRulesFromFile(this).getJSONObject(ruleId)
 
         var vibrationStepMode = 1
 
@@ -76,9 +82,24 @@ class EditRuleActivity : AppCompatActivity() {
         ruleSelectedAppsRecycler = findViewById(R.id.edit_rule_selected_apps_recycler)
         ruleSelectedAppsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        val ruleVibrationStepContainer = findViewById<LinearLayout>(R.id.edit_rule_vibration_step_container)
         val ruleAppDisplayContainer = findViewById<ConstraintLayout>(R.id.edit_rule_app_display_container)
         val ruleVibrationStepModeChip = findViewById<Chip>(R.id.edit_rule_vibration_step_mode_chip)
+        val ruleVibrationStepContainer = findViewById<LinearLayout>(R.id.edit_rule_vibration_step_container)
+        fun updateVibrationStepUI() {
+            ruleVibrationStepContainer.removeAllViews()
+            val pattern = JSONArray(rule.getString("vibrationPattern"))
+
+            var maxWeight = 0
+            for (i in 0 until pattern.length()) {
+                maxWeight += pattern.getInt(i)
+            }
+
+            for (i in 0 until pattern.length()) {
+                val vibrationStepComponent = VibrationStepComponent(this)
+                vibrationStepComponent.setProps((pattern.getInt(i).toFloat()/1000).toString() + "s", i % 2 == 0, pattern.getInt(i).toFloat()/maxWeight)
+                ruleVibrationStepContainer.addView(vibrationStepComponent)
+            }
+        }
 
         if (vibrationStepMode == 0){
             ruleVibrationStepModeChip.text = "Silence"
@@ -89,6 +110,7 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleToggleVibrationSwitch = findViewById<Switch>(R.id.edit_rule_toggle_vibration_switch)
         if (rule.getBoolean("vibration")){
             findViewById<ConstraintLayout>(R.id.edit_rule_edit_vibration_container).visibility = View.VISIBLE
+            updateVibrationStepUI()
         } else {
             findViewById<ConstraintLayout>(R.id.edit_rule_edit_vibration_container).visibility = View.GONE
         }
@@ -99,6 +121,7 @@ class EditRuleActivity : AppCompatActivity() {
             rule.put("vibration", isChecked)
             if (isChecked){
                 findViewById<ConstraintLayout>(R.id.edit_rule_edit_vibration_container).visibility = View.VISIBLE
+                updateVibrationStepUI()
             } else {
                 findViewById<ConstraintLayout>(R.id.edit_rule_edit_vibration_container).visibility = View.GONE
             }
@@ -121,22 +144,13 @@ class EditRuleActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<TextView>(R.id.edit_rule_selected_sound).text = getSoundNameFromUriString(rule.getString("selectedSound"))
 
-        fun updateVibrationStepUI() {
-            ruleVibrationStepContainer.removeAllViews()
-            val pattern = JSONArray(rule.getString("vibrationPattern"))
 
-            var maxWeight = 0
-            for (i in 0 until pattern.length()) {
-                maxWeight += pattern.getInt(i)
-            }
-
-            for (i in 0 until pattern.length()) {
-                val vibrationStepComponent = VibrationStepComponent(this)
-                vibrationStepComponent.setProps((pattern.getInt(i).toFloat()/1000).toString() + "s", i % 2 == 0, pattern.getInt(i).toFloat()/maxWeight)
-                ruleVibrationStepContainer.addView(vibrationStepComponent)
-            }
+        findViewById<ConstraintLayout>(R.id.edit_rule_edit_sound_container).setOnClickListener {
+            selectNotificationSound()
         }
+
 
 
         fun addVibrationStep(length: Int) {
@@ -376,6 +390,62 @@ class EditRuleActivity : AppCompatActivity() {
             ruleKeywordOperationChip.text = rule.getString("keywordOperation")
         }
 
+    }
+
+    private fun selectNotificationSound() {
+        val ringtonePickerIntent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
+            putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION)
+            putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select a notification sound")
+            putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
+            putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+        }
+
+        startActivityForResult(ringtonePickerIntent, 1001)
+    }
+
+
+    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+
+            val soundUriString: String? = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)?.toString()
+
+            soundUriString?.let {
+
+                val soundName = getSoundNameFromUriString(it)
+
+                rule.put("selectedSound", it)
+
+                findViewById<TextView>(R.id.edit_rule_selected_sound).text = soundName
+            }
+        }
+    }
+
+
+    private fun getSoundNameFromUriString(uriString: String): String {
+        var soundName = "Unknown Sound"
+
+        if (uriString == RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()) {
+            return "Default Notification Sound"
+        }
+
+        val uri = Uri.parse(uriString)
+
+        val cursor = contentResolver.query(uri, null, null, null, null)
+
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val displayNameColumnIndex = it.getColumnIndex(android.provider.MediaStore.Audio.Media.DISPLAY_NAME)
+
+                if (displayNameColumnIndex != -1) {
+                    soundName = it.getString(displayNameColumnIndex)
+                }
+            }
+        }
+
+        return soundName
     }
 
 

@@ -32,7 +32,7 @@ class NotificationService : NotificationListenerService() {
             }
 
             if (rule.getBoolean("sound")){
-                triggerCustomSound(rule.getString("selectedSound"))
+                triggerCustomSound(this, rule.getString("selectedSound"))
             }
 
         }
@@ -138,13 +138,18 @@ class NotificationService : NotificationListenerService() {
         vibrator.vibrate(vibrationEffect)
     }
 
-    private fun triggerCustomSound(sound: String) {
+    private fun triggerCustomSound(context: Context, soundUriString: String) {
+        val soundUri = Uri.parse(soundUriString)
 
-        val soundUri: Uri = Uri.parse("android.resource://${packageName}/raw/custom_sound")
-        val mediaPlayer = MediaPlayer.create(this, soundUri)
-        mediaPlayer.setOnCompletionListener { it.release() }
-        mediaPlayer.start()
+        val mediaPlayer = MediaPlayer().apply {
+            setDataSource(context, soundUri)
+            prepare()
+            start()
+        }
 
+        mediaPlayer.setOnCompletionListener {
+            it.release()
+        }
     }
 
 }
