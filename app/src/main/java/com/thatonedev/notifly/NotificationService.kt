@@ -4,6 +4,8 @@ import android.app.Notification
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.service.notification.NotificationListenerService
@@ -15,6 +17,8 @@ import java.io.File
 class NotificationService : NotificationListenerService() {
 
     private lateinit var ruleArray: JSONArray
+    private var vibDelay = false
+    private var sndDelay = false
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         ruleArray = loadRulesFromFile(this)
@@ -23,18 +27,20 @@ class NotificationService : NotificationListenerService() {
         val notificationText = sbn.notification.extras.getString(Notification.EXTRA_TEXT, "")
 
         // Check if notification matches criteria
-        val ruleId = shouldCustomizeNotification(packageName, notificationTitle, notificationText)
-        if (ruleId != -1) {
-            val rule = ruleArray.getJSONObject(ruleId)
+        if (!vibDelay && !sndDelay) {
+            val ruleId = shouldCustomizeNotification(packageName, notificationTitle, notificationText)
+            if (ruleId != -1) {
+                val rule = ruleArray.getJSONObject(ruleId)
+                //val vib = rule.getBoolean("vibration")
+                //val snd = rule.getBoolean("sound")
 
-            if (rule.getBoolean("vibration")){
-                triggerCustomVibration(rule.getString("vibrationPattern"))
+                if (rule.getBoolean("vibration")){
+                    triggerCustomVibration(rule.getString("vibrationPattern"))
+                }
+                if (rule.getBoolean("sound")){
+                    triggerCustomSound(this, rule.getString("selectedSound"))
+                }
             }
-
-            if (rule.getBoolean("sound")){
-                triggerCustomSound(this, rule.getString("selectedSound"))
-            }
-
         }
     }
 
@@ -129,7 +135,7 @@ class NotificationService : NotificationListenerService() {
     }
 
 
-    private fun triggerCustomVibration(vibration: String) {
+    /*private fun triggerCustomVibration(vibration: String) {
         val stringValues = vibration.trim('[', ']').split(",").map { it.trim() }
         val vibrationPattern = longArrayOf(0) + stringValues.map { it.toLong() }.toLongArray()
 
@@ -150,6 +156,44 @@ class NotificationService : NotificationListenerService() {
         mediaPlayer.setOnCompletionListener {
             it.release()
         }
+    }*/
+
+
+
+    private fun triggerCustomVibration(vibration: String) {
+        val stringValues = vibration.trim('[', ']').split(",").map { it.trim() }
+        val vibrationPattern = longArrayOf(0) + stringValues.map { it.toLong() }.toLongArray()
+
+        vibDelay = true
+
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val vibrationEffect = VibrationEffect.createWaveform(vibrationPattern, -1)
+        vibrator.vibrate(vibrationEffect)
+
+        val totalVibrationDuration = vibrationPattern.sum()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            vibDelay = false
+        }, totalVibrationDuration)
     }
+
+
+    private fun triggerCustomSound(context: Context, soundUriString: String) {
+        val soundUri = Uri.parse(soundUriString)
+
+        sndDelay = true
+
+        val mediaPlayer = MediaPlayer().apply {
+            setDataSource(context, soundUri)
+            prepare()
+            start()
+        }
+
+        mediaPlayer.setOnCompletionListener {
+            sndDelay = false
+            it.release()
+        }
+    }
+
 
 }
