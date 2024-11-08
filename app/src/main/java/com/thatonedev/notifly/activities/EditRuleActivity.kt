@@ -80,7 +80,6 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleFilterTypeSpinner = findViewById<Spinner>(R.id.edit_rule_filter_type_spinner)
         val ruleAddKeywordsContainer = findViewById<ConstraintLayout>(R.id.edit_rule_add_keywords_container)
         ruleSelectedAppsRecycler = findViewById(R.id.edit_rule_selected_apps_recycler)
-        ruleSelectedAppsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         val ruleAppDisplayContainer = findViewById<ConstraintLayout>(R.id.edit_rule_app_display_container)
         val ruleVibrationStepModeChip = findViewById<Chip>(R.id.edit_rule_vibration_step_mode_chip)

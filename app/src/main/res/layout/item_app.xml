@@ -8,6 +8,7 @@
         <ImageView
                 android:id="@+id/app_icon"
                 android:layout_width="34dp"
+                android:src="@mipmap/ic_launcher"
                 android:layout_height="34dp"
                 android:layout_margin="4dp"/>
 
