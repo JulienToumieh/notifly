@@ -6,6 +6,7 @@
         android:id="@+id/mainThing"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         tools:context=".activities.EditRuleActivity">
 <ScrollView
         android:layout_width="match_parent"
@@ -24,6 +25,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" android:id="@+id/cardView2"
+            app:cardCornerRadius="10dp"
             android:layout_margin="6dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,6 +54,7 @@
     <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
             app:layout_constraintTop_toBottomOf="@+id/cardView2" android:id="@+id/cardView3"
             android:backgroundTint="?attr/colorOnSecondary"
             android:layout_margin="6dp">
@@ -63,7 +66,9 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/constraintLayout2">
+                    android:layout_height="wrap_content" android:id="@+id/constraintLayout2"
+                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
                 <TextView
                         android:text="Apply To All Apps"
@@ -111,6 +116,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/cardView3" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:cardCornerRadius="10dp"
             android:backgroundTint="?attr/colorOnSecondary"
             android:layout_margin="6dp" android:id="@+id/cardView4">
 
@@ -183,6 +189,7 @@
                     <TextView
                             android:text="Add"
                             android:textSize="20dp"
+                            android:layout_marginRight="5dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:id="@+id/edit_rule_add_keyword_button"
                             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
@@ -200,30 +207,56 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:cardCornerRadius="10dp"
             android:backgroundTint="?attr/colorOnSecondary"
             android:layout_margin="6dp" android:id="@+id/cardView8"
             app:layout_constraintTop_toBottomOf="@+id/cardView4">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:paddingVertical="2dp"
+                android:padding="4dp"
                 android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="6dp" android:id="@+id/constraintLayout4"
+                    android:layout_height="wrap_content" android:id="@+id/constraintLayout4"
                     app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:visibility="gone"
+                        android:layout_height="match_parent" app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                        android:id="@+id/constraintLayout6">
+
+                    <TextView
+                            android:text="Vibration"
+                            android:layout_height="wrap_content"
+                            android:textSize="18dp"
+                            android:layout_width="0dp"
+                            android:layout_margin="10dp"
+                            android:id="@+id/textView11"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/edit_rule_toggle_vibration_switch"/>
+                    <Switch
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:id="@+id/edit_rule_toggle_vibration_switch"
+                            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:paddingBottom="6dp"
                         android:layout_height="wrap_content" android:id="@+id/edit_rule_edit_vibration_container"
-                        app:layout_constraintTop_toBottomOf="@+id/edit_rule_toggle_vibration_switch"
+                        app:layout_constraintTop_toBottomOf="@+id/constraintLayout6"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent">
+                        app:layout_constraintStart_toStartOf="parent" android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent">
 
                     <LinearLayout
                             android:orientation="horizontal"
@@ -369,52 +402,52 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
-                        android:text="Vibration"
-                        android:layout_height="wrap_content"
-                        android:textSize="18dp"
-                        android:layout_width="0dp"
-                        android:layout_margin="4dp"
-                        android:id="@+id/textView11"
-                        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/edit_rule_toggle_vibration_switch"/>
-                <Switch
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:id="@+id/edit_rule_toggle_vibration_switch"
-                        app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"/>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="6dp" app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
                     app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
 
 
-                <TextView
-                        android:text="Sound"
-                        android:layout_height="wrap_content"
-                        android:textSize="18dp"
-                        android:layout_width="0dp"
-                        android:layout_margin="4dp"
-                        android:id="@+id/textView16"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:id="@+id/constraintLayout7"
                         app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/edit_rule_toggle_sound_switch"/>
-                <Switch
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:id="@+id/edit_rule_toggle_sound_switch"
-                        app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                    <TextView
+                            android:text="Sound"
+                            android:layout_height="wrap_content"
+                            android:textSize="18dp"
+                            android:layout_width="0dp"
+                            android:layout_margin="10dp"
+                            android:id="@+id/textView16"
+                            app:layout_constraintEnd_toStartOf="@+id/edit_rule_toggle_sound_switch"
+                            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    <Switch
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:id="@+id/edit_rule_toggle_sound_switch"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:visibility="visible"
                         android:id="@+id/edit_rule_edit_sound_container"
-                        android:layout_margin="4dp"
-                        app:layout_constraintTop_toBottomOf="@+id/edit_rule_toggle_sound_switch"
-                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginBottom="6dp"
+                        app:layout_constraintTop_toBottomOf="@+id/constraintLayout7"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
 
                     <TextView
                             android:text="Notification Sound"
@@ -429,7 +462,8 @@
                             android:backgroundTint="#0000"
                             android:padding="4dp"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" app:srcCompat="@drawable/baseline_keyboard_arrow_right_24"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/baseline_keyboard_arrow_right_24"
                             android:id="@+id/imageButton" app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -437,12 +471,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
-
-
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
