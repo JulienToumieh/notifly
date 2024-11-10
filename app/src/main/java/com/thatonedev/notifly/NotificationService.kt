@@ -31,13 +31,12 @@ class NotificationService : NotificationListenerService() {
             val ruleId = shouldCustomizeNotification(packageName, notificationTitle, notificationText)
             if (ruleId != -1) {
                 val rule = ruleArray.getJSONObject(ruleId)
-                //val vib = rule.getBoolean("vibration")
-                //val snd = rule.getBoolean("sound")
+                val ringerMode = checkRingerMode(this)
 
-                if (rule.getBoolean("vibration")){
+                if (rule.getBoolean("vibration") && ringerMode != 0){
                     triggerCustomVibration(rule.getString("vibrationPattern"))
                 }
-                if (rule.getBoolean("sound")){
+                if (rule.getBoolean("sound") && (ringerMode == 2 || ringerMode == -1)){
                     triggerCustomSound(this, rule.getString("selectedSound"))
                 }
             }
@@ -159,6 +158,20 @@ class NotificationService : NotificationListenerService() {
     }*/
 
 
+    private fun checkRingerMode(context: Context): Int { // 0 -> Silent, 1 -> Vibrate, 2 -> Normal
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        when (audioManager.ringerMode) {
+            AudioManager.RINGER_MODE_SILENT ->
+                return 0
+            AudioManager.RINGER_MODE_VIBRATE ->
+                return 1
+            AudioManager.RINGER_MODE_NORMAL ->
+                return 2
+        }
+        return -1
+    }
+
 
     private fun triggerCustomVibration(vibration: String) {
         val stringValues = vibration.trim('[', ']').split(",").map { it.trim() }
@@ -176,7 +189,6 @@ class NotificationService : NotificationListenerService() {
             vibDelay = false
         }, totalVibrationDuration)
     }
-
 
     private fun triggerCustomSound(context: Context, soundUriString: String) {
         val soundUri = Uri.parse(soundUriString)

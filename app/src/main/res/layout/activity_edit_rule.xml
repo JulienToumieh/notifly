@@ -226,7 +226,7 @@
             app:cardCornerRadius="10dp"
             android:backgroundTint="?attr/colorOnSecondary"
             android:layout_margin="8dp" android:id="@+id/cardView8"
-            app:layout_constraintTop_toBottomOf="@+id/cardView4">
+            app:layout_constraintTop_toBottomOf="@+id/cardView4" app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent" android:paddingVertical="6dp"
@@ -284,6 +284,27 @@
                             android:id="@+id/edit_rule_vibration_step_container"
                             android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+
+                        <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                app:cardBackgroundColor="?attr/colorPrimary"
+                                android:id="@+id/vibration_step_card"
+                                app:cardCornerRadius="10dp"
+                                android:layout_margin="3dp"
+                                android:layout_height="40dp">
+
+                            <TextView
+                                    android:id="@+id/vibration_step_value"
+                                    android:textColor="?attr/colorOnPrimary"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="0.5s"
+                                    android:textStyle="bold"
+                                    android:gravity="center"
+                                    android:textAlignment="center"/>
+
+                        </androidx.cardview.widget.CardView>
+
 
                     </LinearLayout>
 
