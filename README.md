@@ -8,6 +8,7 @@ A simple kotlin app that allows you to play a custom sound and vibration pattern
 - Filtering allows including, excluding, as well as combining (AND/OR) keywords
 - Edit a custom vibration pattern
 - Select a custom notification sound
+- Follow device ringer setting (Alert/Vibrate/Silent)
 - Light & Dark theme support
 
 ### Screenshots
