@@ -6,6 +6,7 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Bundle
 import android.os.PowerManager
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.thatonedev.notifly.activities.EditRuleActivity
 import com.thatonedev.notifly.activities.PermissionActivity
+import com.thatonedev.notifly.activities.SettingsActivity
 import com.thatonedev.notifly.components.RuleComponent
 import org.json.JSONArray
 import org.json.JSONObject
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
 
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         val isIgnoringBatteryOptimizations = powerManager.isIgnoringBatteryOptimizations(packageName)
@@ -54,6 +57,11 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
             val ruleId = loadRulesFromFile(this).length() - 1
             editRule(ruleId)
         }
+
+        findViewById<ImageButton>(R.id.open_settings_btn).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
     }
 
     private fun refreshRules(ruleArray: JSONArray){
