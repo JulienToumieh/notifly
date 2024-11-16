@@ -22,7 +22,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
-class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
+class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass{
 
         findViewById<ImageButton>(R.id.open_settings_btn).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
+            finish()
         }
 
     }
