@@ -1,11 +1,14 @@
 package com.thatonedev.notifly.activities
 
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.Switch
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
@@ -17,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
 import com.thatonedev.notifly.components.RuleComponent
@@ -32,6 +36,57 @@ class SettingsActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+
+        if (findViewById<Switch>(R.id.enable_inactive_rule_hours_switch).isChecked)
+            findViewById<ConstraintLayout>(R.id.edit_rule_inactive_hours).visibility = View.VISIBLE
+        else
+            findViewById<ConstraintLayout>(R.id.edit_rule_inactive_hours).visibility = View.GONE
+
+        findViewById<Switch>(R.id.enable_inactive_rule_hours_switch).setOnClickListener {
+            if (findViewById<Switch>(R.id.enable_inactive_rule_hours_switch).isChecked)
+                findViewById<ConstraintLayout>(R.id.edit_rule_inactive_hours).visibility = View.VISIBLE
+            else
+                findViewById<ConstraintLayout>(R.id.edit_rule_inactive_hours).visibility = View.GONE
+        }
+
+        findViewById<Chip>(R.id.edit_active_from_hour_chip).setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+
+            val timePickerDialog = TimePickerDialog(
+                this,
+                { _, selectedHour, selectedMinute ->
+
+                },
+                hour,
+                minute,
+                false
+            )
+
+            timePickerDialog.show()
+
+        }
+
+        findViewById<Chip>(R.id.edit_active_to_hour_chip).setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+
+            val timePickerDialog = TimePickerDialog(
+                this,
+                { _, selectedHour, selectedMinute ->
+
+                },
+                hour,
+                minute,
+                false
+            )
+
+            timePickerDialog.show()
+
         }
 
         findViewById<ConstraintLayout>(R.id.backup_rules_setting).setOnClickListener {
