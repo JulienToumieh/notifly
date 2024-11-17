@@ -3,9 +3,11 @@ package com.thatonedev.notifly.activities
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import android.widget.Button
 import android.widget.Switch
@@ -18,14 +20,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
-import com.thatonedev.notifly.components.RuleComponent
 import org.json.JSONArray
 import java.io.File
+
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,17 +38,147 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
+        val activeDayColor = TypedValue()
+        val inactiveDayColor = TypedValue()
+        this.theme.resolveAttribute(com.google.android.material.R.attr.colorPrimaryContainer, activeDayColor, true)
+        this.theme.resolveAttribute(Color.TRANSPARENT, inactiveDayColor, true)
 
-        if (findViewById<Switch>(R.id.enable_inactive_rule_hours_switch).isChecked)
-            findViewById<ConstraintLayout>(R.id.edit_rule_inactive_hours).visibility = View.VISIBLE
-        else
-            findViewById<ConstraintLayout>(R.id.edit_rule_inactive_hours).visibility = View.GONE
 
-        findViewById<Switch>(R.id.enable_inactive_rule_hours_switch).setOnClickListener {
-            if (findViewById<Switch>(R.id.enable_inactive_rule_hours_switch).isChecked)
-                findViewById<ConstraintLayout>(R.id.edit_rule_inactive_hours).visibility = View.VISIBLE
+        val sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE)
+
+        findViewById<Switch>(R.id.enable_active_rule_hours_switch).isChecked = 
+            sharedPreferences.getBoolean("activeHoursEnabled", false)
+
+
+        val activeDays = JSONArray(sharedPreferences.getString("activeDays", "[mon,tue,wed,thu,fri,sat,sun]"))
+
+
+        val monDayCard = findViewById<CardView>(R.id.active_day_mon_card)
+        val tueDayCard = findViewById<CardView>(R.id.active_day_tue_card)
+        val wedDayCard = findViewById<CardView>(R.id.active_day_wed_card)
+        val thuDayCard = findViewById<CardView>(R.id.active_day_thu_card)
+        val friDayCard = findViewById<CardView>(R.id.active_day_fri_card)
+        val satDayCard = findViewById<CardView>(R.id.active_day_sat_card)
+        val sunDayCard = findViewById<CardView>(R.id.active_day_sun_card)
+
+        fun refreshDays() {
+            monDayCard.setCardBackgroundColor(inactiveDayColor.data)
+            tueDayCard.setCardBackgroundColor(inactiveDayColor.data)
+            wedDayCard.setCardBackgroundColor(inactiveDayColor.data)
+            thuDayCard.setCardBackgroundColor(inactiveDayColor.data)
+            friDayCard.setCardBackgroundColor(inactiveDayColor.data)
+            satDayCard.setCardBackgroundColor(inactiveDayColor.data)
+            sunDayCard.setCardBackgroundColor(inactiveDayColor.data)
+
+            for (i in 0 until activeDays.length()){
+                when (activeDays[i]) {
+                    "mon" ->  monDayCard.setCardBackgroundColor(activeDayColor.data)
+                    "tue" ->  tueDayCard.setCardBackgroundColor(activeDayColor.data)
+                    "wed" ->  wedDayCard.setCardBackgroundColor(activeDayColor.data)
+                    "thu" ->  thuDayCard.setCardBackgroundColor(activeDayColor.data)
+                    "fri" ->  friDayCard.setCardBackgroundColor(activeDayColor.data)
+                    "sat" ->  satDayCard.setCardBackgroundColor(activeDayColor.data)
+                    "sun" ->  sunDayCard.setCardBackgroundColor(activeDayColor.data)
+                }
+            }
+            sharedPreferences.edit().putString("activeDays",  activeDays.toString()).apply()
+        }
+
+        refreshDays()
+
+        fun containsString(jsonArray: JSONArray, target: String): Int {
+            for (i in 0 until jsonArray.length()) {
+                if (jsonArray.getString(i) == target) {
+                    return i  // Return the index if the item is found
+                }
+            }
+            return -1  // Return -1 if the item is not found
+        }
+
+
+        monDayCard.setOnClickListener {
+            val day = "mon"
+            val dayIDX = containsString(activeDays, day)
+            if (dayIDX == -1)
+                activeDays.put(day)
             else
-                findViewById<ConstraintLayout>(R.id.edit_rule_inactive_hours).visibility = View.GONE
+                activeDays.remove(dayIDX)
+
+            refreshDays()
+        }
+        tueDayCard.setOnClickListener {
+            val day = "tue"
+            val dayIDX = containsString(activeDays, day)
+            if (dayIDX == -1)
+                activeDays.put(day)
+            else
+                activeDays.remove(dayIDX)
+
+            refreshDays()
+        }
+        wedDayCard.setOnClickListener {
+            val day = "wed"
+            val dayIDX = containsString(activeDays, day)
+            if (dayIDX == -1)
+                activeDays.put(day)
+            else
+                activeDays.remove(dayIDX)
+
+            refreshDays()
+        }
+        thuDayCard.setOnClickListener {
+            val day = "thu"
+            val dayIDX = containsString(activeDays, day)
+            if (dayIDX == -1)
+                activeDays.put(day)
+            else
+                activeDays.remove(dayIDX)
+
+            refreshDays()
+        }
+        friDayCard.setOnClickListener {
+            val day = "fri"
+            val dayIDX = containsString(activeDays, day)
+            if (dayIDX == -1)
+                activeDays.put(day)
+            else
+                activeDays.remove(dayIDX)
+
+            refreshDays()
+        }
+        satDayCard.setOnClickListener {
+            val day = "sat"
+            val dayIDX = containsString(activeDays, day)
+            if (dayIDX == -1)
+                activeDays.put(day)
+            else
+                activeDays.remove(dayIDX)
+
+            refreshDays()
+        }
+        sunDayCard.setOnClickListener {
+            val day = "sun"
+            val dayIDX = containsString(activeDays, day)
+            if (dayIDX == -1)
+                activeDays.put(day)
+            else
+                activeDays.remove(dayIDX)
+
+            refreshDays()
+        }
+
+
+        if (findViewById<Switch>(R.id.enable_active_rule_hours_switch).isChecked)
+            findViewById<ConstraintLayout>(R.id.edit_rule_active_hours).visibility = View.VISIBLE
+        else
+            findViewById<ConstraintLayout>(R.id.edit_rule_active_hours).visibility = View.GONE
+
+        findViewById<Switch>(R.id.enable_active_rule_hours_switch).setOnClickListener {
+            sharedPreferences.edit().putBoolean("activeHoursEnabled", findViewById<Switch>(R.id.enable_active_rule_hours_switch).isChecked).apply()
+            if (findViewById<Switch>(R.id.enable_active_rule_hours_switch).isChecked)
+                findViewById<ConstraintLayout>(R.id.edit_rule_active_hours).visibility = View.VISIBLE
+            else
+                findViewById<ConstraintLayout>(R.id.edit_rule_active_hours).visibility = View.GONE
         }
 
         findViewById<Chip>(R.id.edit_active_from_hour_chip).setOnClickListener {
