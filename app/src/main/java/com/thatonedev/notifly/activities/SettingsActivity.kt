@@ -89,10 +89,10 @@ class SettingsActivity : AppCompatActivity() {
         fun containsString(jsonArray: JSONArray, target: String): Int {
             for (i in 0 until jsonArray.length()) {
                 if (jsonArray.getString(i) == target) {
-                    return i  // Return the index if the item is found
+                    return i
                 }
             }
-            return -1  // Return -1 if the item is not found
+            return -1
         }
 
 
@@ -181,6 +181,21 @@ class SettingsActivity : AppCompatActivity() {
                 findViewById<ConstraintLayout>(R.id.edit_rule_active_hours).visibility = View.GONE
         }
 
+
+
+        fun refreshActiveHours() {
+            fun convertToAmPm(time24: String): String {
+                val (hour, minute) = time24.split(":").map { it.toInt() }
+                return "%02d:%02d %s".format((if (hour % 12 == 0) 12 else hour % 12), minute, if (hour < 12) "AM" else "PM")
+            }
+            val fromHour = sharedPreferences.getString("activeHoursFrom", "07:00")
+            val toHour = sharedPreferences.getString("activeHoursTo", "18:00")
+
+            findViewById<Chip>(R.id.edit_active_from_hour_chip).text = fromHour?.let { convertToAmPm(it) }
+            findViewById<Chip>(R.id.edit_active_to_hour_chip).text = toHour?.let { convertToAmPm(it) }
+        }
+        refreshActiveHours()
+
         findViewById<Chip>(R.id.edit_active_from_hour_chip).setOnClickListener {
             val calendar = Calendar.getInstance()
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -189,7 +204,8 @@ class SettingsActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 { _, selectedHour, selectedMinute ->
-
+                    sharedPreferences.edit().putString("activeHoursFrom",  "$selectedHour:$selectedMinute").apply()
+                    refreshActiveHours()
                 },
                 hour,
                 minute,
@@ -197,7 +213,6 @@ class SettingsActivity : AppCompatActivity() {
             )
 
             timePickerDialog.show()
-
         }
 
         findViewById<Chip>(R.id.edit_active_to_hour_chip).setOnClickListener {
@@ -208,7 +223,8 @@ class SettingsActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 { _, selectedHour, selectedMinute ->
-
+                    sharedPreferences.edit().putString("activeHoursTo",  "$selectedHour:$selectedMinute").apply()
+                    refreshActiveHours()
                 },
                 hour,
                 minute,
@@ -216,7 +232,6 @@ class SettingsActivity : AppCompatActivity() {
             )
 
             timePickerDialog.show()
-
         }
 
         findViewById<ConstraintLayout>(R.id.backup_rules_setting).setOnClickListener {
