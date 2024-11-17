@@ -14,6 +14,9 @@ import android.service.notification.StatusBarNotification
 import android.util.Log
 import org.json.JSONArray
 import java.io.File
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class NotificationService : NotificationListenerService() {
 
@@ -26,6 +29,38 @@ class NotificationService : NotificationListenerService() {
         val packageName = sbn.packageName
         val notificationTitle = sbn.notification.extras.getString(Notification.EXTRA_TITLE, "")
         val notificationText = sbn.notification.extras.getString(Notification.EXTRA_TEXT, "")
+
+
+        val sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE)
+
+
+
+
+
+        if (sharedPreferences.getBoolean("activeHoursEnabled", false)){
+
+            val now = LocalTime.now()
+            val from = LocalTime.parse(sharedPreferences.getString("activeHoursFrom", "07:00"))
+            val to = LocalTime.parse(sharedPreferences.getString("activeHoursTo", "18:00"))
+
+
+
+            if (from.isBefore(to)) if (!(now.isAfter(from) && now.isBefore(to))) return
+            else if (!(now.isAfter(from) || now.isBefore(to))) return
+
+
+            val activeDays = JSONArray(sharedPreferences.getString("activeDays", "[mon,tue,wed,thu,fri,sat,sun]"))
+            val currentDay = LocalDate.now().format(DateTimeFormatter.ofPattern("EEE")).lowercase()
+            var found = false
+            for (i in 0 until activeDays.length())
+                if (currentDay == activeDays.get(i)){
+                    found = true
+                    break
+                }
+            if (!found)
+                return
+        }
+
 
         if (!vibDelay && !sndDelay) {
             val ruleId = shouldCustomizeNotification(packageName, notificationTitle, notificationText)

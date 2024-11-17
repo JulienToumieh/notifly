@@ -25,6 +25,7 @@ import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
 import org.json.JSONArray
 import java.io.File
+import java.util.*
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -181,8 +182,6 @@ class SettingsActivity : AppCompatActivity() {
                 findViewById<ConstraintLayout>(R.id.edit_rule_active_hours).visibility = View.GONE
         }
 
-
-
         fun refreshActiveHours() {
             fun convertToAmPm(time24: String): String {
                 val (hour, minute) = time24.split(":").map { it.toInt() }
@@ -204,7 +203,8 @@ class SettingsActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 { _, selectedHour, selectedMinute ->
-                    sharedPreferences.edit().putString("activeHoursFrom",  "$selectedHour:$selectedMinute").apply()
+                    val formattedTime = String.format(Locale.US, "%02d:%02d", selectedHour, selectedMinute)
+                    sharedPreferences.edit().putString("activeHoursFrom", formattedTime).apply()
                     refreshActiveHours()
                 },
                 hour,
@@ -223,7 +223,8 @@ class SettingsActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 { _, selectedHour, selectedMinute ->
-                    sharedPreferences.edit().putString("activeHoursTo",  "$selectedHour:$selectedMinute").apply()
+                    val formattedTime = String.format(Locale.US, "%02d:%02d", selectedHour, selectedMinute)
+                    sharedPreferences.edit().putString("activeHoursTo", formattedTime).apply()
                     refreshActiveHours()
                 },
                 hour,
