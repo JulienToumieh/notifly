@@ -33,21 +33,13 @@ class NotificationService : NotificationListenerService() {
 
         val sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE)
 
-
-
-
-
         if (sharedPreferences.getBoolean("activeHoursEnabled", false)){
-
             val now = LocalTime.now()
             val from = LocalTime.parse(sharedPreferences.getString("activeHoursFrom", "07:00"))
             val to = LocalTime.parse(sharedPreferences.getString("activeHoursTo", "18:00"))
 
-
-
             if (from.isBefore(to)) if (!(now.isAfter(from) && now.isBefore(to))) return
             else if (!(now.isAfter(from) || now.isBefore(to))) return
-
 
             val activeDays = JSONArray(sharedPreferences.getString("activeDays", "[mon,tue,wed,thu,fri,sat,sun]"))
             val currentDay = LocalDate.now().format(DateTimeFormatter.ofPattern("EEE")).lowercase()

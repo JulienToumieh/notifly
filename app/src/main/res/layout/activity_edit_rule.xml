@@ -101,6 +101,7 @@
                         android:layout_marginHorizontal="6dp"
                         android:layout_marginBottom="6dp"
                         tools:listitem="@layout/item_app"
+                        tools:itemCount="6"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         android:orientation="horizontal"
                         android:id="@+id/edit_rule_selected_apps_recycler"
