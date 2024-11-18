@@ -9,6 +9,7 @@ A simple kotlin app that allows you to play a custom sound and vibration pattern
 - Edit a custom vibration pattern
 - Select a custom notification sound
 - Follow device ringer setting (Alert/Vibrate/Silent)
+- Apply custom Do Not Disturb for rules globally
 - Light & Dark theme support
 
 ### Screenshots
@@ -17,8 +18,7 @@ A simple kotlin app that allows you to play a custom sound and vibration pattern
 <img alt="Dark UI + Rule Editor" src="https://github.com/user-attachments/assets/8c300015-742b-44b5-8661-37d2cf018b62" width="352">
 <img alt="Light UI + Rule Editor" src="https://github.com/user-attachments/assets/cd0ea576-e820-424e-a4dd-99f549e37fd9" width="352">
 <img alt="Dark UI + App Selector" src="https://github.com/user-attachments/assets/5ad0dc7f-924a-4d3d-a9d7-e87c5725edf5" width="352">
-<img alt="Light UI + App Selector" src="https://github.com/user-attachments/assets/fedf6b78-b4cc-4fe4-9c6d-f0299fea6708" width="352">
-
+<img alt="Dark UI + Settings" src="https://github.com/user-attachments/assets/04ecab57-ed40-41f7-8c12-42717d2e5fe6" width="352">
 
 
 Note: This app does NOT mute the original notification's sound and vibration, you will have to manually do so in the app settings.
