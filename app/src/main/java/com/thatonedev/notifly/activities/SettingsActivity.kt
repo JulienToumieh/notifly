@@ -21,6 +21,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
+import com.google.android.material.slider.Slider
 import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
 import org.json.JSONArray
@@ -50,6 +51,33 @@ class SettingsActivity : AppCompatActivity() {
         findViewById<Switch>(R.id.enable_active_rule_hours_switch).isChecked = 
             sharedPreferences.getBoolean("activeHoursEnabled", false)
 
+        findViewById<Switch>(R.id.enable_override_notification_volume_switch).isChecked =
+            sharedPreferences.getBoolean("overrideNotificationVolumeEnabled", false)
+
+
+        if (findViewById<Switch>(R.id.enable_override_notification_volume_switch).isChecked)
+            findViewById<ConstraintLayout>(R.id.edit_override_notification_volume).visibility = View.VISIBLE
+        else
+            findViewById<ConstraintLayout>(R.id.edit_override_notification_volume).visibility = View.GONE
+
+        findViewById<Switch>(R.id.enable_override_notification_volume_switch).setOnClickListener {
+            sharedPreferences.edit().putBoolean("overrideNotificationVolumeEnabled", findViewById<Switch>(R.id.enable_override_notification_volume_switch).isChecked).apply()
+            if (findViewById<Switch>(R.id.enable_override_notification_volume_switch).isChecked)
+                findViewById<ConstraintLayout>(R.id.edit_override_notification_volume).visibility = View.VISIBLE
+            else
+                findViewById<ConstraintLayout>(R.id.edit_override_notification_volume).visibility = View.GONE
+        }
+
+        findViewById<Slider>(R.id.rule_notification_volume_slider).value = sharedPreferences.getInt("overrideNotificationVolume", 50).toFloat()
+
+        findViewById<Slider>(R.id.rule_notification_volume_slider).addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                sharedPreferences.edit().putInt("overrideNotificationVolume", slider.value.toInt()).apply()
+            }
+        })
 
         val activeDays = JSONArray(sharedPreferences.getString("activeDays", "[mon,tue,wed,thu,fri,sat,sun]"))
 
