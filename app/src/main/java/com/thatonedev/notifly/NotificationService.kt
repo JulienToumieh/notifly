@@ -218,16 +218,21 @@ class NotificationService : NotificationListenerService() {
     }
 
     private fun triggerCustomSound(context: Context, soundUriString: String) {
+        val sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE)
+
+
         val soundUri = Uri.parse(soundUriString)
-
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
         val originalMediaVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+        var notificationVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION)
 
-        val notificationVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION)
-        val maxNotificationVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION)
+        
+        if (sharedPreferences.getBoolean("overrideNotificationVolumeEnabled", false)){
+            val overrideVolume = sharedPreferences.getInt("overrideNotificationVolume", 50)
+            val maxMusicVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+            notificationVolume = ((overrideVolume / 100f) * maxMusicVolume).toInt()
+        }
 
-        val mediaPlayerVolume = notificationVolume.toFloat() / maxNotificationVolume.toFloat()
 
         val wasPlaying = audioManager.isMusicActive
         if (wasPlaying) {
@@ -242,7 +247,6 @@ class NotificationService : NotificationListenerService() {
             setDataSource(context, soundUri)
             prepare()
             start()
-            setVolume(mediaPlayerVolume, mediaPlayerVolume)
         }
 
         mediaPlayer.setOnCompletionListener {
