@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
 import org.json.JSONArray
@@ -19,7 +20,7 @@ class RuleComponent(private val activity: Activity, private val dataSet: JSONArr
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ruleName: TextView = view.findViewById(R.id.rule_name)
-        val ruleSwitch: Switch = view.findViewById(R.id.rule_switch)
+        val ruleSwitch: MaterialSwitch = view.findViewById(R.id.rule_switch)
         val ruleCard: CardView = view.findViewById(R.id.rule_card)
         val ruleDelete: ImageButton = view.findViewById(R.id.rule_delete_button)
     }

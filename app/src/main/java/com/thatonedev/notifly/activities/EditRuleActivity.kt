@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
 import com.thatonedev.notifly.components.VibrationStepComponent
@@ -68,7 +69,7 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleNameEditPopup = findViewById<CardView>(R.id.edit_rule_name_popup)
         val ruleNameInput = findViewById<EditText>(R.id.edit_rule_name_input)
         val ruleNameSaveButton = findViewById<Button>(R.id.edit_rule_name_save_button)
-        val ruleActiveSwitch = findViewById<Switch>(R.id.edit_rule_activate_switch)
+        val ruleActiveSwitch = findViewById<MaterialSwitch>(R.id.edit_rule_activate_switch)
         val ruleAddApps = findViewById<ImageButton>(R.id.edit_rule_add_apps)
         val ruleApplyToApps = findViewById<TextView>(R.id.edit_rule_apply_to_apps)
         val ruleKeywordOperationChip = findViewById<Chip>(R.id.edit_rule_keyword_operation_chip)
@@ -106,7 +107,7 @@ class EditRuleActivity : AppCompatActivity() {
             ruleVibrationStepModeChip.text = "Vibration"
         }
 
-        val ruleToggleVibrationSwitch = findViewById<Switch>(R.id.edit_rule_toggle_vibration_switch)
+        val ruleToggleVibrationSwitch = findViewById<MaterialSwitch>(R.id.edit_rule_toggle_vibration_switch)
         if (rule.getBoolean("vibration")){
             findViewById<ConstraintLayout>(R.id.edit_rule_edit_vibration_container).visibility = View.VISIBLE
             updateVibrationStepUI()
@@ -126,7 +127,7 @@ class EditRuleActivity : AppCompatActivity() {
             }
         }
 
-        val ruleToggleSoundSwitch = findViewById<Switch>(R.id.edit_rule_toggle_sound_switch)
+        val ruleToggleSoundSwitch = findViewById<MaterialSwitch>(R.id.edit_rule_toggle_sound_switch)
         if (rule.getBoolean("sound")){
             findViewById<ConstraintLayout>(R.id.edit_rule_edit_sound_container).visibility = View.VISIBLE
         } else {

@@ -22,6 +22,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.slider.Slider
 import com.thatonedev.notifly.MainActivity
 import com.thatonedev.notifly.R
@@ -49,21 +50,21 @@ class SettingsActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE)
 
-        findViewById<Switch>(R.id.enable_active_rule_hours_switch).isChecked = 
+        findViewById<MaterialSwitch>(R.id.enable_active_rule_hours_switch).isChecked =
             sharedPreferences.getBoolean("activeHoursEnabled", false)
 
-        findViewById<Switch>(R.id.enable_override_notification_volume_switch).isChecked =
+        findViewById<MaterialSwitch>(R.id.enable_override_notification_volume_switch).isChecked =
             sharedPreferences.getBoolean("overrideNotificationVolumeEnabled", false)
 
 
-        if (findViewById<Switch>(R.id.enable_override_notification_volume_switch).isChecked)
+        if (findViewById<MaterialSwitch>(R.id.enable_override_notification_volume_switch).isChecked)
             findViewById<ConstraintLayout>(R.id.edit_override_notification_volume).visibility = View.VISIBLE
         else
             findViewById<ConstraintLayout>(R.id.edit_override_notification_volume).visibility = View.GONE
 
-        findViewById<Switch>(R.id.enable_override_notification_volume_switch).setOnClickListener {
-            sharedPreferences.edit().putBoolean("overrideNotificationVolumeEnabled", findViewById<Switch>(R.id.enable_override_notification_volume_switch).isChecked).apply()
-            if (findViewById<Switch>(R.id.enable_override_notification_volume_switch).isChecked)
+        findViewById<MaterialSwitch>(R.id.enable_override_notification_volume_switch).setOnClickListener {
+            sharedPreferences.edit().putBoolean("overrideNotificationVolumeEnabled", findViewById<MaterialSwitch>(R.id.enable_override_notification_volume_switch).isChecked).apply()
+            if (findViewById<MaterialSwitch>(R.id.enable_override_notification_volume_switch).isChecked)
                 findViewById<ConstraintLayout>(R.id.edit_override_notification_volume).visibility = View.VISIBLE
             else
                 findViewById<ConstraintLayout>(R.id.edit_override_notification_volume).visibility = View.GONE
@@ -198,14 +199,14 @@ class SettingsActivity : AppCompatActivity() {
         }
 
 
-        if (findViewById<Switch>(R.id.enable_active_rule_hours_switch).isChecked)
+        if (findViewById<MaterialSwitch>(R.id.enable_active_rule_hours_switch).isChecked)
             findViewById<ConstraintLayout>(R.id.edit_rule_active_hours).visibility = View.VISIBLE
         else
             findViewById<ConstraintLayout>(R.id.edit_rule_active_hours).visibility = View.GONE
 
-        findViewById<Switch>(R.id.enable_active_rule_hours_switch).setOnClickListener {
-            sharedPreferences.edit().putBoolean("activeHoursEnabled", findViewById<Switch>(R.id.enable_active_rule_hours_switch).isChecked).apply()
-            if (findViewById<Switch>(R.id.enable_active_rule_hours_switch).isChecked)
+        findViewById<MaterialSwitch>(R.id.enable_active_rule_hours_switch).setOnClickListener {
+            sharedPreferences.edit().putBoolean("activeHoursEnabled", findViewById<MaterialSwitch>(R.id.enable_active_rule_hours_switch).isChecked).apply()
+            if (findViewById<MaterialSwitch>(R.id.enable_active_rule_hours_switch).isChecked)
                 findViewById<ConstraintLayout>(R.id.edit_rule_active_hours).visibility = View.VISIBLE
             else
                 findViewById<ConstraintLayout>(R.id.edit_rule_active_hours).visibility = View.GONE

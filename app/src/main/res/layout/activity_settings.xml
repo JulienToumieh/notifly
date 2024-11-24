@@ -56,7 +56,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/textView12"
                             app:layout_constraintBottom_toBottomOf="@+id/constraintLayout8"
                             app:layout_constraintEnd_toStartOf="@+id/enable_active_rule_hours_switch"/>
-                    <Switch
+                    <com.google.android.material.materialswitch.MaterialSwitch
                             android:text=""
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:id="@+id/enable_active_rule_hours_switch"
@@ -307,7 +307,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/textView21"
                             app:layout_constraintBottom_toBottomOf="@+id/constraintLayout8"
                             app:layout_constraintEnd_toStartOf="@+id/enable_override_notification_volume_switch"/>
-                    <Switch
+                    <com.google.android.material.materialswitch.MaterialSwitch
                             android:text=""
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:id="@+id/enable_override_notification_volume_switch"

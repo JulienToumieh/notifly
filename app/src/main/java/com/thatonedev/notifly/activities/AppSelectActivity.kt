@@ -18,6 +18,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.thatonedev.notifly.R
 import com.thatonedev.notifly.components.AppSelectCardComponent
 import org.json.JSONArray
@@ -94,13 +95,13 @@ class AppSelectActivity : AppCompatActivity(), AppSelectCardComponent.OnDataPass
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                adapter.filter(s.toString(), findViewById<Switch>(R.id.app_select_active_switch).isChecked)
+                adapter.filter(s.toString(), findViewById<MaterialSwitch>(R.id.app_select_active_switch).isChecked)
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        findViewById<Switch>(R.id.app_select_active_switch).setOnCheckedChangeListener { _, isChecked ->
+        findViewById<MaterialSwitch>(R.id.app_select_active_switch).setOnCheckedChangeListener { _, isChecked ->
             adapter.filter(searchBar.text.toString(), isChecked)
         }
     }
