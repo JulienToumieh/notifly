@@ -50,6 +50,7 @@
                     <TextView
                             android:text="Rules will not trigger outside the specified hours"
                             android:layout_width="0dp"
+                            android:layout_marginRight="10dp"
                             android:layout_height="wrap_content" android:id="@+id/textView13"
                             app:layout_constraintStart_toStartOf="parent"
                             android:textColor="#9E9E9E"
@@ -58,6 +59,7 @@
                             app:layout_constraintEnd_toStartOf="@+id/enable_active_rule_hours_switch"/>
                     <com.google.android.material.materialswitch.MaterialSwitch
                             android:text=""
+                            android:layout_marginHorizontal="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:id="@+id/enable_active_rule_hours_switch"
                             app:layout_constraintTop_toTopOf="parent"
@@ -289,7 +291,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" android:id="@+id/constraintLayout8"
+                        app:layout_constraintStart_toStartOf="parent" android:id="@+id/constraintLayout9"
                         app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
@@ -301,14 +303,16 @@
                     <TextView
                             android:text="Override the system notification volume for the rules"
                             android:layout_width="0dp"
+                            android:layout_marginRight="10dp"
                             android:layout_height="wrap_content" android:id="@+id/textView20"
                             app:layout_constraintStart_toStartOf="parent"
                             android:textColor="#9E9E9E"
                             app:layout_constraintTop_toBottomOf="@+id/textView21"
-                            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout8"
+                            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout9"
                             app:layout_constraintEnd_toStartOf="@+id/enable_override_notification_volume_switch"/>
                     <com.google.android.material.materialswitch.MaterialSwitch
                             android:text=""
+                            android:layout_marginHorizontal="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:id="@+id/enable_override_notification_volume_switch"
                             app:layout_constraintTop_toTopOf="parent"
@@ -322,7 +326,7 @@
                         android:layout_marginTop="10dp"
                         android:id="@+id/edit_override_notification_volume"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/constraintLayout8"
+                        app:layout_constraintTop_toBottomOf="@+id/constraintLayout9"
                         app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
 
                     <com.google.android.material.slider.Slider

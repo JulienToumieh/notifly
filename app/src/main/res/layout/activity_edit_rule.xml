@@ -44,7 +44,8 @@
             <com.google.android.material.materialswitch.MaterialSwitch
                     android:text=""
                     android:layout_width="wrap_content"
-                    android:layout_margin="4dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="2dp"
                     android:layout_height="wrap_content" android:id="@+id/edit_rule_activate_switch"
                     app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -262,7 +263,8 @@
                     <com.google.android.material.materialswitch.MaterialSwitch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginVertical="2dp"
                             android:id="@+id/edit_rule_toggle_vibration_switch"
                             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -446,12 +448,22 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <View
+                    android:layout_width="match_parent"
+                    android:id="@+id/separator1"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="4dp"
+                    android:background="#4b94b0" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+                    app:layout_constraintTop_toBottomOf="@+id/separator1"
                     app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -476,7 +488,8 @@
                     <com.google.android.material.materialswitch.MaterialSwitch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginVertical="2dp"
                             android:id="@+id/edit_rule_toggle_sound_switch"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"/>

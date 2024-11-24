@@ -58,7 +58,8 @@
                 android:text="Selected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
+                android:textSize="18sp"
+                android:layout_marginRight="14dp"
                 android:id="@+id/textView7"
                 app:layout_constraintEnd_toStartOf="@+id/app_select_active_switch"
                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toTopOf="@+id/app_search_bar"/>
