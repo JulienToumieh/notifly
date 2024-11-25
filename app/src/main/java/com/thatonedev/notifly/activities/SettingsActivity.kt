@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.icu.util.Calendar
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -32,6 +35,9 @@ import java.util.*
 
 
 class SettingsActivity : AppCompatActivity() {
+
+    private var sndDelay = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -78,6 +84,7 @@ class SettingsActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(slider: Slider) {
                 sharedPreferences.edit().putInt("overrideNotificationVolume", slider.value.toInt()).apply()
+                triggerNotificationSound(this@SettingsActivity)
             }
         })
 
@@ -283,6 +290,49 @@ class SettingsActivity : AppCompatActivity() {
 
     }
 
+
+    private fun triggerNotificationSound(context: Context) {
+        if (sndDelay) return
+
+        val sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE)
+        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val originalMediaVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+
+        val overrideVolume = sharedPreferences.getInt("overrideNotificationVolume", 50)
+        val maxMusicVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        val notificationVolume = ((overrideVolume / 100f) * maxMusicVolume).toInt()
+
+
+        val wasPlaying = audioManager.isMusicActive
+        if (wasPlaying) {
+            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+        }
+
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, notificationVolume, 0)
+
+        sndDelay = true
+
+        val mediaPlayer = MediaPlayer().apply {
+            setDataSource(context, soundUri)
+            prepare()
+            start()
+        }
+
+        mediaPlayer.setOnCompletionListener {
+            sndDelay = false
+            it.release()
+
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalMediaVolume, 0)
+
+            if (wasPlaying) {
+                audioManager.abandonAudioFocus(null)
+            }
+        }
+    }
+
+
     private fun saveRulesToFile(context: Context, ruleArray: JSONArray) {
         val file = File(context.filesDir, "rules.json")
         file.writeText(ruleArray.toString())
@@ -327,11 +377,11 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    fun onBackupButtonClick() {
+    private fun onBackupButtonClick() {
         backupLauncher.launch("Notifly_Backup.json")
     }
 
-    fun onRestoreButtonClick() {
+    private fun onRestoreButtonClick() {
         restoreLauncher.launch(arrayOf("*/*"))
     }
 
