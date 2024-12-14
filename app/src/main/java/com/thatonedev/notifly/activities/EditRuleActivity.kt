@@ -82,6 +82,22 @@ class EditRuleActivity : AppCompatActivity() {
         val ruleAddKeywordsContainer = findViewById<ConstraintLayout>(R.id.edit_rule_add_keywords_container)
         ruleSelectedAppsRecycler = findViewById(R.id.edit_rule_selected_apps_recycler)
 
+
+        val ruleIgnoreDNDSwitch = findViewById<MaterialSwitch>(R.id.edit_rule_ignore_dnd_switch)
+        val ruleIgnoreRingerSwitch = findViewById<MaterialSwitch>(R.id.edit_rule_ignore_ringer_switch)
+
+        ruleIgnoreDNDSwitch.isChecked = rule.getBoolean("ignoreDND")
+        ruleIgnoreRingerSwitch.isChecked = rule.getBoolean("ignoreRinger")
+
+        ruleIgnoreDNDSwitch.setOnCheckedChangeListener { _, isChecked ->
+            rule.put("ignoreDND", isChecked)
+        }
+
+        ruleIgnoreRingerSwitch.setOnCheckedChangeListener { _, isChecked ->
+            rule.put("ignoreRinger", isChecked)
+        }
+
+
         val ruleAppDisplayContainer = findViewById<ConstraintLayout>(R.id.edit_rule_app_display_container)
         val ruleVibrationStepModeChip = findViewById<Chip>(R.id.edit_rule_vibration_step_mode_chip)
         val ruleVibrationStepContainer = findViewById<LinearLayout>(R.id.edit_rule_vibration_step_container)

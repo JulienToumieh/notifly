@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass {
         refreshRules(loadRulesFromFile(this))
 
         findViewById<FloatingActionButton>(R.id.add_rule_btn).setOnClickListener {
-            createRule(this, "New Rule",true ,"[]", false, "[]", false, getDefaultNotificationSound(), "All Notifications", "[]", "OR")
+            createRule(this, "New Rule",true ,"[]", false, "[]", false, getDefaultNotificationSound(), "All Notifications", "[]", "OR", false, false)
 
             val ruleId = loadRulesFromFile(this).length() - 1
             editRule(ruleId)
@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass {
             finish()
         }
 
+        updateRuleFeatures()
     }
 
     private fun refreshRules(ruleArray: JSONArray){
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass {
         recyclerView.adapter = adapter
     }
 
-    private fun createRule(context: Context, name: String, active: Boolean, apps: String, vibration: Boolean, vibrationPattern: String, sound: Boolean, selectedSound: String,containsType: String, containsData: String, containsOperation: String) {
+    private fun createRule(context: Context, name: String, active: Boolean, apps: String, vibration: Boolean, vibrationPattern: String, sound: Boolean, selectedSound: String,containsType: String, containsData: String, containsOperation: String, ignoreDND: Boolean, ignoreRinger: Boolean) {
         val rulesArray = loadRulesFromFile(context)
         val newRule = JSONObject().apply {
             put("name", name)
@@ -86,12 +87,35 @@ class MainActivity : AppCompatActivity(), RuleComponent.OnDataPass {
             put("keywordOperation", containsOperation) // AND, OR
             put("keywordInclusion", true)
             put("keywords", containsData)
-
+            put("ignoreDND", ignoreDND)
+            put("ignoreRinger", ignoreRinger)
         }
         rulesArray.put(newRule)
 
         saveRulesToFile(context, rulesArray)
         refreshRules(rulesArray)
+    }
+
+    private fun updateRuleFeatures(){
+        var rules = loadRulesFromFile(this)
+
+        for (i in 0 until rules.length()){
+            var rule = rules.getJSONObject(i)
+            if (!rule.has("name")) rule.put("name", "New Rule")
+            if (!rule.has("active")) rule.put("active", true)
+            if (!rule.has("apps")) rule.put("apps", "[]")
+            if (!rule.has("vibration")) rule.put("vibration", false)
+            if (!rule.has("vibrationPattern")) rule.put("vibrationPattern", "[]")
+            if (!rule.has("sound")) rule.put("sound", false)
+            if (!rule.has("selectedSound")) rule.put("selectedSound", getDefaultNotificationSound())
+            if (!rule.has("filterType")) rule.put("filterType", "All Notifications")
+            if (!rule.has("keywords")) rule.put("keywords", "[]")
+            if (!rule.has("keywordOperation")) rule.put("keywordOperation", "OR")
+            if (!rule.has("ignoreDND")) rule.put("ignoreDND", false)
+            if (!rule.has("ignoreRinger")) rule.put("ignoreRinger", false)
+        }
+
+        saveRulesToFile(this, rules)
     }
 
     private fun saveRulesToFile(context: Context, ruleArray: JSONArray) {
