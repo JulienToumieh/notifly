@@ -13,6 +13,7 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
@@ -30,42 +31,48 @@ class NotificationService : NotificationListenerService() {
         val notificationTitle = sbn.notification.extras.getString(Notification.EXTRA_TITLE, "")
         val notificationText = sbn.notification.extras.getString(Notification.EXTRA_TEXT, "")
 
+        val ruleId = shouldCustomizeNotification(packageName, notificationTitle, notificationText)
+        val rule : JSONObject
+
+        if (ruleId != -1)
+            rule = ruleArray.getJSONObject(ruleId)
+        else
+            return
 
         val sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE)
 
-        if (sharedPreferences.getBoolean("activeHoursEnabled", false)){
-            val now = LocalTime.now()
-            val from = LocalTime.parse(sharedPreferences.getString("activeHoursFrom", "07:00"))
-            val to = LocalTime.parse(sharedPreferences.getString("activeHoursTo", "18:00"))
+        if (!rule.getBoolean("ignoreDND"))
+            if (sharedPreferences.getBoolean("activeHoursEnabled", false)){
+                val now = LocalTime.now()
+                val from = LocalTime.parse(sharedPreferences.getString("activeHoursFrom", "07:00"))
+                val to = LocalTime.parse(sharedPreferences.getString("activeHoursTo", "18:00"))
 
-            if (from.isBefore(to)) if (!(now.isAfter(from) && now.isBefore(to))) return
-            else if (!(now.isAfter(from) || now.isBefore(to))) return
+                if (from.isBefore(to)) if (!(now.isAfter(from) && now.isBefore(to))) return
+                else if (!(now.isAfter(from) || now.isBefore(to))) return
 
-            val activeDays = JSONArray(sharedPreferences.getString("activeDays", "[mon,tue,wed,thu,fri,sat,sun]"))
-            val currentDay = LocalDate.now().format(DateTimeFormatter.ofPattern("EEE")).lowercase()
-            var found = false
-            for (i in 0 until activeDays.length())
-                if (currentDay == activeDays.get(i)){
-                    found = true
-                    break
-                }
-            if (!found)
-                return
-        }
+                val activeDays = JSONArray(sharedPreferences.getString("activeDays", "[mon,tue,wed,thu,fri,sat,sun]"))
+                val currentDay = LocalDate.now().format(DateTimeFormatter.ofPattern("EEE")).lowercase()
+                var found = false
+                for (i in 0 until activeDays.length())
+                    if (currentDay == activeDays.get(i)){
+                        found = true
+                        break
+                    }
+                if (!found)
+                    return
+            }
 
 
         if (!vibDelay && !sndDelay) {
-            val ruleId = shouldCustomizeNotification(packageName, notificationTitle, notificationText)
-            if (ruleId != -1) {
-                val rule = ruleArray.getJSONObject(ruleId)
-                val ringerMode = checkRingerMode(this)
+            var ringerMode = 2
+            if (!rule.getBoolean("ignoreRinger"))
+                ringerMode = checkRingerMode(this)
 
-                if (rule.getBoolean("vibration") && ringerMode != 0){
-                    triggerCustomVibration(rule.getString("vibrationPattern"))
-                }
-                if (rule.getBoolean("sound") && (ringerMode == 2 || ringerMode == -1)){
-                    triggerCustomSound(this, rule.getString("selectedSound"))
-                }
+            if (rule.getBoolean("vibration") && ringerMode != 0){
+                triggerCustomVibration(rule.getString("vibrationPattern"))
+            }
+            if (rule.getBoolean("sound") && (ringerMode == 2 || ringerMode == -1)){
+                triggerCustomSound(this, rule.getString("selectedSound"))
             }
         }
     }
